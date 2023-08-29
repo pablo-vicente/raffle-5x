@@ -18,7 +18,7 @@ export type ISortedCupon = {
 
 export function SortedCuponsList({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
     return (
-        <Paper square={true} sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: 360 }}>
+        <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: 360 }}>
             <Demo>
                 <List
                     dense={true}

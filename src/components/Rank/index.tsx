@@ -45,7 +45,7 @@ export function Rank({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
         return rank;
     }
     return (
-        <Paper square={true} sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '360px' }}>
+        <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '360px' }}>
             <List
                 dense={true}
                 sx={{ width: '100%' }}
