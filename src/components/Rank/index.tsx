@@ -4,7 +4,6 @@ import {
     ListItemAvatar,
     ListItemText,
     ListSubheader,
-    Paper,
     Typography
 } from "@mui/material";
 import {
@@ -45,45 +44,44 @@ export function Rank({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
         return rank;
     }
     return (
-        <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '360px' }}>
-            <List
-                dense={true}
-                sx={{ width: '100%' }}
-                subheader={
-                    <ListSubheader component="div" id="nested-list-subheader">
-                        <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                            Rank Participantes
-                        </Typography>
-                    </ListSubheader>
-                }
-            >
-                {
+        <List
+            dense={true}
+            sx={{ width: '100%' }}
+            subheader={
+                <ListSubheader component="div" id="nested-list-subheader">
+                    <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+                        Rank Participantes
+                    </Typography>
+                </ListSubheader>
+            }
+        >
+            {
 
-                    participants.sort((a, b) => (a.Cupons > b.Cupons) ? -1 : 1).map(partipant =>
-                        <ListItem key={partipant.Name}
-                        // secondaryAction={
-                        //     // partipant.Cupons > 0
-                        //     //     ? <Badge badgeContent={partipant.Cupons} color="secondary">
-                        //     //         <AddReactionOutlined sx={{ color: 'success.main' }} />
-                        //     //     </Badge>
-                        //     //     : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
-                        // }
-                        >
-                            <ListItemText
-                                primary={partipant.Name}
-                            />
-                            <ListItemAvatar>
-                                {
-                                    generateRank(partipant.Cupons).map((e, i) => e
-                                        ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
-                                        : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
-                                }
+                participants.sort((a, b) => (a.Cupons > b.Cupons) ? -1 : 1).map(partipant =>
+                    <ListItem key={partipant.Name}
+                    // secondaryAction={
+                    //     // partipant.Cupons > 0
+                    //     //     ? <Badge badgeContent={partipant.Cupons} color="secondary">
+                    //     //         <AddReactionOutlined sx={{ color: 'success.main' }} />
+                    //     //     </Badge>
+                    //     //     : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
+                    // }
+                    >
+                        <ListItemText
+                            primary={partipant.Name}
+                        />
+                        <ListItemAvatar>
+                            {
+                                generateRank(partipant.Cupons).map((e, i) => e
+                                    ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
+                                    : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
+                            }
 
 
-                            </ListItemAvatar>
-                        </ListItem>
-                    )
-                }
-            </List>
-        </Paper>)
+                        </ListItemAvatar>
+                    </ListItem>
+                )
+            }
+        </List>
+    )
 }
