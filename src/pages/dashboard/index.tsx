@@ -23,7 +23,7 @@ export function Dashboard() {
 
     const buttons = [
         <Button key="one" disabled={Number(randomNumber) !== cupom} onClick={handleClick}>Sortear 1</Button>,
-        <Button key="two">Sortear Até Acabar</Button>,
+        <Button key="two" disabled={Number(randomNumber) !== cupom}>Sortear Até Acabar</Button>,
     ];
 
 
