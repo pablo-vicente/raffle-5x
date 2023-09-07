@@ -4,26 +4,25 @@ import { Panel } from "../../components/Panel";
 import { Rank } from "../../components/Rank";
 import { ISortedCupon, SortedCuponsList } from "../../components/SortedCuponsList";
 import { useState } from "react";
+import useRevealCupom from "../../hooks/revealCupom";
 
 export function Dashboard() {
     const [cupom, setCupom] = useState<number>(0);
-    const [sorting, setSorting] = useState<boolean>(false);
-
+    const { randomNumber, setRevealCupom } = useRevealCupom();
 
     function randomIntFromInterval(min: number, max: number) { // min and max included 
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
     function handleClick() {
-        setSorting(true);
 
         const sortedNumber = randomIntFromInterval(1, 99999)
+        setRevealCupom(sortedNumber);
         setCupom(sortedNumber);
-        setSorting(false);
     }
 
     const buttons = [
-        <Button key="one" disabled={sorting} onClick={handleClick}>Sortear 1</Button>,
+        <Button key="one" disabled={Number(randomNumber) !== cupom} onClick={handleClick}>Sortear 1</Button>,
         <Button key="two">Sortear Até Acabar</Button>,
     ];
 
@@ -37,7 +36,7 @@ export function Dashboard() {
             </Paper>
 
             <Paper elevation={3} sx={{ width: '40%' }}>
-                <Panel cupom={cupom} />
+                <Panel cupom={randomNumber} />
 
                 <Box
                     sx={{
