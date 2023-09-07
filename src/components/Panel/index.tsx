@@ -13,18 +13,16 @@ export function Panel({ cupom }: { cupom: number }) {
     const [timeSorted, setTimeSorted] = useState<number>(0);
 
     useEffect(() => {
-        console.log(cupom)
         if (cupom === Number(number))
             return;
 
+        const stringValue = `${cupom}`.toString();
+        const length = stringValue.length - 1;
+        const timeForElement = duration / stringValue.length;
+        const positionIntSorted = Math.floor(timeSorted / timeForElement);
+        const positionRtl = length - positionIntSorted;
+
         const intervalId = setInterval(() => {
-
-            const stringValue = `${cupom}`.toString();
-            const timeForElement = duration / stringValue.length;
-            const length = stringValue.length - 1;
-
-            const positionIntSorted = Math.floor(timeSorted / timeForElement);
-            const positionRtl = length - positionIntSorted;
 
             let temp: number[] = [];
             for (let index = length; index >= 0; index--) {
