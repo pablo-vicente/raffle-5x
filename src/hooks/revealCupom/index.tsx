@@ -1,32 +1,30 @@
 import { useEffect, useState } from "react";
 
-const duration = 5000;
-const mininalDuration = 10;
+const maxRandonInteration = 200;
 
-export default function useRevealCupom() {
+export default function useRevealCupom(duration: number = 5000) {
   const [cupomInReveal, setCupomInReveal] = useState<number>(0);
   const [number, setNumber] = useState<string>("0");
-  const [timeSorted, setTimeSorted] = useState<number>(0);
+  const [startTime, setStartTime] = useState<Date>(new Date());
 
   useEffect(() => {
-
+    if (cupomInReveal === Number(number))
+      return;
 
     const stringValue = `${cupomInReveal}`.toString();
     const length = stringValue.length - 1;
     const timeForElement = duration / stringValue.length;
+    const timeSorted = (new Date().getTime() - startTime.getTime());
     const positionIntSorted = Math.floor(timeSorted / timeForElement);
     const positionRtl = length - positionIntSorted;
+    const intervalDuration = maxRandonInteration * positionIntSorted / stringValue.length;
 
     const intervalId = setInterval(() => {
-
-      if (cupomInReveal === Number(number))
-        return;
-
       let temp: number[] = [];
       for (let index = length; index >= 0; index--) {
         const originalValue = Number(stringValue[index]);
 
-        const positionNumber = index >= positionRtl
+        const positionNumber = index > positionRtl
           ? originalValue
           : randonNumber(originalValue)
 
@@ -35,19 +33,10 @@ export default function useRevealCupom() {
       const newNumber = (temp.join(""));
       setNumber(newNumber);
 
-      const time = timeSorted >= duration
-        ? 0
-        : timeSorted + mininalDuration;
-
-      // console.log("time:" + time)
-      const date = new Date();
-      console.log("TIME:" + date.getSeconds() + ":" + date.getMilliseconds())
-
-      setTimeSorted(time);
-    }, mininalDuration);
+    }, intervalDuration);
 
     return () => clearInterval(intervalId);
-  }, [cupomInReveal, duration, number, timeSorted]);
+  }, [cupomInReveal, duration, number, startTime]);
 
   function randonNumber(value: number) {
     let randonNumber = Math.floor(Math.random() * (9 + 1));
@@ -64,6 +53,7 @@ export default function useRevealCupom() {
     randomNumber: number,
     setRevealCupom: (cupom: number) => {
       setCupomInReveal(cupom);
+      setStartTime(new Date())
     }
   };
 }
