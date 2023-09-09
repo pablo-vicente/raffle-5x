@@ -10,7 +10,8 @@ import {
 
 export type IRaffledCoupon = {
     Code: number,
-    Name: string
+    Name: string,
+    Time: Date
 };
 
 export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
@@ -27,17 +28,19 @@ export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffle
             }
         >
             {
-                raffledCoupons.map((cupon, index) =>
+                raffledCoupons
+                    .sort((a, b) => (a.Time.getTime() > b.Time.getTime()) ? -1 : 1)
+                    .map((cupon, index) =>
 
-                    <ListItem key={index}>
-                        <ListItemIcon>
-                            {cupon.Code}
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={cupon.Name}
-                        />
-                    </ListItem>
-                )
+                        <ListItem key={index}>
+                            <ListItemIcon>
+                                {cupon.Code}
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={cupon.Name}
+                            />
+                        </ListItem>
+                    )
 
             }
         </List>
