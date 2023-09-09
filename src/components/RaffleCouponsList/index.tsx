@@ -8,12 +8,12 @@ import {
 } from '@mui/material';
 
 
-export type ISortedCupon = {
+export type IRaffledCoupon = {
     Code: number,
     Name: string
 };
 
-export function SortedCuponsList({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
+export function RaffleCouponsList({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
     return (
         <List
             dense={true}
@@ -27,7 +27,7 @@ export function SortedCuponsList({ sotedCupons }: { sotedCupons: ISortedCupon[] 
             }
         >
             {
-                sotedCupons.map((cupon, index) =>
+                raffledCoupons.map((cupon, index) =>
 
                     <ListItem key={index}>
                         <ListItemIcon>
