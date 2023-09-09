@@ -10,17 +10,17 @@ import {
     AddReactionOutlined,
     SentimentVeryDissatisfied,
 } from '@mui/icons-material';
-import { ISortedCupon } from "../SortedCuponsList";
+import { IRaffledCoupon } from "../RaffledCouponsList";
 
-export function Rank({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
+export function Rank({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
 
-    const maxSorted = 5;
+    const maxRaffled = 5;
 
     const dictionary: { [key: string]: number } = {};
 
-    sotedCupons.forEach(x => {
-        const atual = !dictionary[x.Name] ? 0 : dictionary[x.Name]
-        dictionary[x.Name] = atual + 1
+    raffledCoupons.forEach(x => {
+        const current = !dictionary[x.Name] ? 0 : dictionary[x.Name]
+        dictionary[x.Name] = current + 1
     })
 
     const participants = Object
@@ -29,17 +29,17 @@ export function Rank({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
 
             return {
                 Name: x[0],
-                Cupons: x[1]
+                Coupons: x[1]
             }
         });
 
 
 
-    function generateRank(SortedCupons: number) {
+    function generateRank(RaffledCoupons: number) {
 
-        const sorted = [...Array(SortedCupons)].map(() => true);
-        const notSorted = [...Array(maxSorted - SortedCupons)].map(() => false);
-        const rank = [...sorted, ...notSorted];
+        const raffled = [...Array(RaffledCoupons)].map(() => true);
+        const notRaffled = [...Array(maxRaffled - RaffledCoupons)].map(() => false);
+        const rank = [...raffled, ...notRaffled];
 
         return rank;
     }
@@ -57,10 +57,10 @@ export function Rank({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
         >
             {
 
-                participants.sort((a, b) => (a.Cupons > b.Cupons) ? -1 : 1).map(partipant =>
+                participants.sort((a, b) => (a.Coupons > b.Coupons) ? -1 : 1).map(partipant =>
                     <ListItem key={partipant.Name}
                     // secondaryAction={
-                    //     // partipant.Cupons > 0
+                    //     // partipant.Coupons > 0
                     //     //     ? <Badge badgeContent={partipant.Cupons} color="secondary">
                     //     //         <AddReactionOutlined sx={{ color: 'success.main' }} />
                     //     //     </Badge>
@@ -72,7 +72,7 @@ export function Rank({ sotedCupons }: { sotedCupons: ISortedCupon[] }) {
                         />
                         <ListItemAvatar>
                             {
-                                generateRank(partipant.Cupons).map((e, i) => e
+                                generateRank(partipant.Coupons).map((e, i) => e
                                     ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
                                     : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
                             }

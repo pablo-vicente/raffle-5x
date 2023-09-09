@@ -13,7 +13,7 @@ export type IRaffledCoupon = {
     Name: string
 };
 
-export function RaffleCouponsList({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
+export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
     return (
         <List
             dense={true}
