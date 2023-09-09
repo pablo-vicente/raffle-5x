@@ -50,7 +50,7 @@ export function Rank({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
             subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
                     <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                        Rank Participantes
+                        Participantes
                     </Typography>
                 </ListSubheader>
             }
