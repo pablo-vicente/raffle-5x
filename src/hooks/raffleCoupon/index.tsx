@@ -30,7 +30,7 @@ export default function useRaffleCoupon(
         const numbersRaffled = Math.floor(timeRaffled / timeForElement);
         const intervalDuration = maxDurationFrameUpdate * numbersRaffled / maxCaracters;
 
-        if (numbersRaffled >= duration) {
+        if (timeRaffled >= duration) {
             setStartTime(new Date(0));
             return;
         }
