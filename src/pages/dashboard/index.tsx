@@ -3,15 +3,52 @@ import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { Panel } from "../../components/Panel";
 import { Rank } from "../../components/Rank";
 import { IRaffledCoupon, RaffledCouponsList } from "../../components/RaffledCouponsList";
-import useRaffleCoupon, { RaffleRevealNumbers } from "../../hooks/RaffleCoupon";
+import useRaffleNumber, { RaffleRevealNumbers } from "../../hooks/RaffleNumber";
+import {coupons, couponsList} from "../../services/dataset";
+import { useEffect, useState } from "react";
+
+export type ICoupon = {
+    Code: number,
+    Name: string,
+};
 
 export function Dashboard() {
-    const { coupon, inRaffle, start } = useRaffleCoupon(RaffleRevealNumbers.LeftToRight, 1, 45000);
+
+    const codes = couponsList.map(x => x.Code);
+    const min = Math.min(...codes);
+    const max = Math.max(...codes);
+    const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, min, max);
+    const [raffledCoupons, setRaffledCoupons] = useState<IRaffledCoupon[]>([]);
+
+    useEffect(() => {
+
+        if (inRaffle)
+            return;
+        const couponNumber = Number(numberRaffled);
+        if (couponNumber === 0)
+            return;
+
+        const coupon = coupons[couponNumber];
+
+        setRaffledCoupons((pre) => {
+
+            const raffledCouponsCopy = [...pre]
+            raffledCouponsCopy.push({
+                Code: coupon.Code,
+                Name: coupon.Name,
+                Time: new Date()
+            });
+
+            return raffledCouponsCopy;
+        });
+    }, [inRaffle, numberRaffled])
+
+
 
     const buttons = [
         <Button key="one" disabled={inRaffle} onClick={() => {
             start();
-        }}>Sortear 1</Button>,
+        }}>Sortear</Button>,
         <Button key="two" disabled={inRaffle}>Sortear Até Acabar</Button>,
     ];
 
@@ -22,7 +59,7 @@ export function Dashboard() {
             </Paper>
 
             <Paper elevation={3} sx={{ width: '40%' }}>
-                <Panel coupon={coupon} />
+                <Panel coupon={numberRaffled} />
 
                 <Box
                     sx={{
@@ -43,34 +80,3 @@ export function Dashboard() {
         </Box>
     )
 }
-
-const raffledCoupons: IRaffledCoupon[] = [
-    {
-        Code: 4000,
-        Name: "507 - HERCILIO SCHATZ"
-    },
-    {
-        Code: 4001,
-        Name: "602 - LOURENO"
-    },
-    {
-        Code: 4001,
-        Name: "507 - HERCILIO SCHATZ"
-    },
-    {
-        Code: 4001,
-        Name: "602 - LOURENO"
-    },
-    {
-        Code: 4002,
-        Name: "604 - HAGATA"
-    },
-    {
-        Code: 4003,
-        Name: "604 - HAGATA"
-    },
-    {
-        Code: 40,
-        Name: "507 - HERCILIO SCHATZ"
-    },
-]
