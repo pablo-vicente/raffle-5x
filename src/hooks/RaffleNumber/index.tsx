@@ -6,7 +6,7 @@ export enum RaffleRevealNumbers {
     LeftToRight = 3
 }
 
-export default function useRaffleCoupon(
+export default function useRaffleNumber(
     raffleReveal: RaffleRevealNumbers,
     min: number,
     max: number,
@@ -85,7 +85,7 @@ export default function useRaffleCoupon(
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
     return {
-        coupon: `${number}`.toString().padStart(maxCaracters, "0"),
+        numberRaffled: `${number}`.toString().padStart(maxCaracters, "0"),
         inRaffle: inRaffle,
         start: () => {
             setStartTime(new Date());
