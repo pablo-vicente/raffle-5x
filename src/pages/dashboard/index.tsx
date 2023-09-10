@@ -1,11 +1,11 @@
 
 import { Box, Button, ButtonGroup, Paper } from "@mui/material";
-import { Panel } from "../../components/Panel";
 import { Rank } from "../../components/Rank";
 import { IRaffledCoupon, RaffledCouponsList } from "../../components/RaffledCouponsList";
 import useRaffleNumber, { RaffleRevealNumbers } from "../../hooks/RaffleNumber";
 import { coupons, couponsList } from "../../services/dataset";
 import { useEffect, useState } from "react";
+import { Ticket } from "../../components/ticket";
 
 export type ICoupon = {
     Code: number,
@@ -20,15 +20,15 @@ export function Dashboard() {
     const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, min, max);
     const [raffledCoupons, setRaffledCoupons] = useState<IRaffledCoupon[]>([]);
 
+    const couponNumber = Number(numberRaffled);
+    const coupon = coupons[couponNumber];
     useEffect(() => {
 
         if (inRaffle)
             return;
-        const couponNumber = Number(numberRaffled);
-        if (couponNumber === 0)
-            return;
 
-        const coupon = coupons[couponNumber];
+        if (!coupon)
+            return;
 
         setRaffledCoupons((pre) => {
 
@@ -41,7 +41,7 @@ export function Dashboard() {
 
             return raffledCouponsCopy;
         });
-    }, [inRaffle, numberRaffled])
+    }, [coupon, inRaffle, numberRaffled])
 
 
 
@@ -59,8 +59,6 @@ export function Dashboard() {
             </Paper>
 
             <Paper elevation={3} sx={{ width: '40%' }}>
-                <Panel coupon={numberRaffled} />
-
                 <Box
                     sx={{
                         display: 'flex',
@@ -68,6 +66,9 @@ export function Dashboard() {
                         alignItems: 'center',
                     }}
                 >
+                    <Box sx={{ padding: '2vh' }}>
+                        <Ticket number={numberRaffled} name={coupon ? coupon.Name : ""} />
+                    </Box>
                     <ButtonGroup aria-label="medium secondary button group">
                         {buttons}
                     </ButtonGroup>
