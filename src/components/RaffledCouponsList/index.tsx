@@ -30,14 +30,18 @@ export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffle
             {
                 raffledCoupons
                     .sort((a, b) => (a.Time.getTime() > b.Time.getTime()) ? -1 : 1)
-                    .map((cupon, index) =>
+                    .map((coupon, index) =>
 
-                        <ListItem key={index}>
+                        <ListItem
+                            key={index}
+                            secondaryAction={coupon.Time.toDateString()}
+                        >
                             <ListItemIcon>
-                                {cupon.Code}
+                                {coupon.Code}
                             </ListItemIcon>
                             <ListItemText
-                                primary={cupon.Name}
+                                primary={coupon.Name}
+                            // secondary={coupon.Time.toDateString()}
                             />
                         </ListItem>
                     )
