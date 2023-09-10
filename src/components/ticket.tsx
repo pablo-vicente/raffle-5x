@@ -108,7 +108,7 @@ export function Ticket({
                                     maxWidth: '70%'
                                 }}
                             >
-                                {name.toUpperCase()}
+                                {name.trim() ? name.trim().toUpperCase() : "NOME"}
                             </Typography>
 
                         </Box>
