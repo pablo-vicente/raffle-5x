@@ -4,7 +4,7 @@ import { Panel } from "../../components/Panel";
 import { Rank } from "../../components/Rank";
 import { IRaffledCoupon, RaffledCouponsList } from "../../components/RaffledCouponsList";
 import useRaffleNumber, { RaffleRevealNumbers } from "../../hooks/RaffleNumber";
-import {coupons, couponsList} from "../../services/dataset";
+import { coupons, couponsList } from "../../services/dataset";
 import { useEffect, useState } from "react";
 
 export type ICoupon = {
