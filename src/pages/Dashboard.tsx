@@ -1,11 +1,11 @@
 
 import { Box, Button, ButtonGroup, Paper } from "@mui/material";
-import { Rank } from "../../components/Rank";
-import { IRaffledCoupon, RaffledCouponsList } from "../../components/RaffledCouponsList";
-import useRaffleNumber, { RaffleRevealNumbers } from "../../hooks/RaffleNumber";
-import { coupons, couponsList } from "../../services/dataset";
+import { coupons, couponsList } from ".././services/dataset";
 import { useEffect, useState } from "react";
-import { Ticket } from "../../components/ticket";
+import { IRaffledCoupon, RaffledCouponsList } from "../components/RaffledCouponsList";
+import { Rank } from "../components/Rank";
+import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
+import { Ticket } from "../components/Ticket";
 
 export type ICoupon = {
     Code: number,

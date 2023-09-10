@@ -10,7 +10,7 @@ import {
     AddReactionOutlined,
     SentimentVeryDissatisfied,
 } from '@mui/icons-material';
-import { IRaffledCoupon } from "../RaffledCouponsList";
+import { IRaffledCoupon } from "./RaffledCouponsList";
 
 export function Rank({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
 
