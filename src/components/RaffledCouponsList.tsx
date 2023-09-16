@@ -9,7 +9,7 @@ import {
 
 
 export type IRaffledCoupon = {
-    Code: number,
+    Code: string,
     Name: string,
     Time: Date
 };
@@ -34,14 +34,13 @@ export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffle
 
                         <ListItem
                             key={index}
-                            secondaryAction={coupon.Time.toDateString()}
+                            secondaryAction={coupon.Time.toLocaleTimeString("pt-BR")}
                         >
                             <ListItemIcon>
                                 {coupon.Code}
                             </ListItemIcon>
                             <ListItemText
                                 primary={coupon.Name}
-                            // secondary={coupon.Time.toDateString()}
                             />
                         </ListItem>
                     )

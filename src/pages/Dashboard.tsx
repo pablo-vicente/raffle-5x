@@ -34,7 +34,7 @@ export function Dashboard() {
 
             const raffledCouponsCopy = [...pre]
             raffledCouponsCopy.push({
-                Code: coupon.Code,
+                Code: numberRaffled,
                 Name: coupon.Name,
                 Time: new Date()
             });
