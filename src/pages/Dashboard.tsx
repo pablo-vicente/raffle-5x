@@ -3,7 +3,7 @@ import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { coupons, couponsList } from ".././services/dataset";
 import { useEffect, useState } from "react";
 import { IRaffledCoupon, RaffledCouponsList } from "../components/RaffledCouponsList";
-import { Rank } from "../components/Rank";
+import { Rank, RankDisplay } from "../components/Rank";
 import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
 import { Ticket } from "../components/Ticket";
 
@@ -76,7 +76,11 @@ export function Dashboard() {
             </Paper>
 
             <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
-                <Rank raffledCoupons={raffledCoupons} />
+                <Rank
+                    raffledCoupons={raffledCoupons}
+                    rankDisplay={RankDisplay.MultipleIcons}
+                    maxRaffle={5}
+                />
             </Paper>
         </Box>
     )

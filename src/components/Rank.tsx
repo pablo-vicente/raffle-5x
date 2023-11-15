@@ -1,7 +1,9 @@
 import {
+    Badge,
+    Box,
     List,
     ListItem,
-    ListItemAvatar,
+    ListItemIcon,
     ListItemText,
     ListSubheader,
     Typography
@@ -12,9 +14,23 @@ import {
 } from '@mui/icons-material';
 import { IRaffledCoupon } from "./RaffledCouponsList";
 
-export function Rank({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
 
-    const maxRaffled = 5;
+export enum RankDisplay {
+    MultipleIcons = 1,
+    SingleIcon = 2,
+}
+
+export function Rank(
+    {
+        raffledCoupons,
+        rankDisplay,
+        maxRaffle
+    }: {
+        raffledCoupons: IRaffledCoupon[],
+        rankDisplay: RankDisplay,
+        maxRaffle: number
+    }) {
+
 
     const dictionary: { [key: string]: number } = {};
 
@@ -38,49 +54,74 @@ export function Rank({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
     function generateRank(RaffledCoupons: number) {
 
         const raffled = [...Array(RaffledCoupons)].map(() => true);
-        const notRaffled = [...Array(maxRaffled - RaffledCoupons)].map(() => false);
+        const notRaffled = [...Array(maxRaffle - RaffledCoupons)].map(() => false);
         const rank = [...raffled, ...notRaffled];
 
         return rank;
     }
+
+    function renderParticipant(coupons: number) {
+        switch (rankDisplay) {
+
+            case RankDisplay.MultipleIcons:
+                return <Box>
+                    {
+                        generateRank(coupons).map((e, i) => e
+                            ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
+                            : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
+
+                    }
+                </Box>
+
+            case RankDisplay.SingleIcon:
+
+                return coupons > 0
+                    ? <Badge badgeContent={coupons} color="secondary">
+                        <AddReactionOutlined sx={{ color: 'success.main' }} />
+                    </Badge>
+                    : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
+        }
+    }
+
     return (
         <List
             dense={true}
             sx={{ width: '100%' }}
             subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
-                    <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+                    <Typography sx={
+                        {
+                            mt: 4,
+                            mb: 2,
+                            display: 'flex',
+                            justifyContent: 'space-between'
+                        }}
+                        variant="h6"
+                        component="div"
+                    >
                         Participantes
+                        <ListItemIcon>
+                            {renderParticipant(maxRaffle)}
+                        </ListItemIcon>
+
                     </Typography>
                 </ListSubheader>
             }
         >
             {
 
-                participants.sort((a, b) => (a.Coupons > b.Coupons) ? -1 : 1).map(partipant =>
-                    <ListItem key={partipant.Name}
-                    // secondaryAction={
-                    //     // partipant.Coupons > 0
-                    //     //     ? <Badge badgeContent={partipant.Cupons} color="secondary">
-                    //     //         <AddReactionOutlined sx={{ color: 'success.main' }} />
-                    //     //     </Badge>
-                    //     //     : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
-                    // }
-                    >
-                        <ListItemText
-                            primary={partipant.Name}
-                        />
-                        <ListItemAvatar>
-                            {
-                                generateRank(partipant.Coupons).map((e, i) => e
-                                    ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
-                                    : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
-                            }
-
-
-                        </ListItemAvatar>
-                    </ListItem>
-                )
+                participants
+                    .sort((a, b) => (a.Coupons > b.Coupons) ? -1 : 1)
+                    .map(participant =>
+                        <ListItem key={participant.Name}>
+                            <ListItemText
+                                primary={participant.Name}
+                            />
+                            <ListItemIcon>
+                                {renderParticipant(participant.Coupons)}
+                            </ListItemIcon>
+                        </ListItem>
+                    )
             }
         </List>
     )
