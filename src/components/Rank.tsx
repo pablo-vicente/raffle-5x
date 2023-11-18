@@ -11,8 +11,11 @@ import {
     AddReactionOutlined,
     SentimentVeryDissatisfied,
 } from '@mui/icons-material';
-import { IRaffledCoupon } from "./RaffledCouponsList";
 
+export type IRankPartipant = {
+    Name: string,
+    Coupons: number,
+};
 
 export enum RankDisplay {
     MultipleIcons = 1,
@@ -21,46 +24,27 @@ export enum RankDisplay {
 
 export function Rank(
     {
-        raffledCoupons,
-        rankDisplay,
+        participants,
+        display,
         maxRaffle
     }: {
-        raffledCoupons: IRaffledCoupon[],
-        rankDisplay: RankDisplay,
+        participants: IRankPartipant[],
+        display: RankDisplay,
         maxRaffle: number
     }) {
 
+    function generateRank(raffledCoupons: number) {
 
-    const dictionary: { [key: string]: number } = {};
-
-    raffledCoupons.forEach(x => {
-        const current = !dictionary[x.Name] ? 0 : dictionary[x.Name]
-        dictionary[x.Name] = current + 1
-    })
-
-    const participants = Object
-        .entries(dictionary)
-        .map(function (x) {
-
-            return {
-                Name: x[0],
-                Coupons: x[1]
-            }
-        });
-
-
-
-    function generateRank(RaffledCoupons: number) {
-
-        const raffled = [...Array(RaffledCoupons)].map(() => true);
-        const notRaffled = [...Array(maxRaffle - RaffledCoupons)].map(() => false);
+        const raffledAdj = raffledCoupons > maxRaffle ? maxRaffle : raffledCoupons;
+        const raffled = [...Array(raffledAdj)].map(() => true);
+        const notRaffled = [...Array(maxRaffle - raffledAdj)].map(() => false);
         const rank = [...raffled, ...notRaffled];
 
         return rank;
     }
 
     function renderParticipant(coupons: number) {
-        switch (rankDisplay) {
+        switch (display) {
 
             case RankDisplay.MultipleIcons:
                 return <>
