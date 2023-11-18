@@ -8,7 +8,7 @@ import {
     Typography
 } from "@mui/material";
 import {
-    AddReactionOutlined,
+    SentimentSatisfiedOutlined,
     SentimentVeryDissatisfied,
 } from '@mui/icons-material';
 
@@ -50,7 +50,7 @@ export function Rank(
                 return <>
                     {
                         generateRank(coupons).map((e, i) => e
-                            ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
+                            ? <SentimentSatisfiedOutlined key={i} sx={{ color: 'success.main' }} />
                             : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
 
                     }
@@ -60,7 +60,7 @@ export function Rank(
 
                 return coupons > 0
                     ? <Badge badgeContent={coupons} color="secondary">
-                        <AddReactionOutlined sx={{ color: 'success.main' }} />
+                        <SentimentSatisfiedOutlined sx={{ color: 'success.main' }} />
                     </Badge>
                     : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
         }
