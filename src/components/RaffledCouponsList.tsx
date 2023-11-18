@@ -14,7 +14,13 @@ export type IRaffledCoupon = {
     Time: Date
 };
 
-export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffledCoupon[] }) {
+export function RaffledCouponsList(
+    {
+        Coupons,
+    }:
+        {
+            Coupons: IRaffledCoupon[],
+        }) {
     return (
         <List
             dense={true}
@@ -28,7 +34,7 @@ export function RaffledCouponsList({ raffledCoupons }: { raffledCoupons: IRaffle
             }
         >
             {
-                raffledCoupons
+                Coupons
                     .sort((a, b) => (a.Time.getTime() > b.Time.getTime()) ? -1 : 1)
                     .map((coupon, index) =>
 
