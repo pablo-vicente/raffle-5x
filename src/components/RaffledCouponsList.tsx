@@ -16,10 +16,10 @@ export type IRaffledCoupon = {
 
 export function RaffledCouponsList(
     {
-        Coupons,
+        coupons,
     }:
         {
-            Coupons: IRaffledCoupon[],
+            coupons: IRaffledCoupon[],
         }) {
     return (
         <List
@@ -34,7 +34,7 @@ export function RaffledCouponsList(
             }
         >
             {
-                Coupons
+                coupons
                     .sort((a, b) => (a.Time.getTime() > b.Time.getTime()) ? -1 : 1)
                     .map((coupon, index) =>
 
