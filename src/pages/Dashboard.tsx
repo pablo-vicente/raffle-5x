@@ -1,5 +1,5 @@
 
-import { Box, Button, ButtonGroup, Paper } from "@mui/material";
+import { Box, Button, ButtonGroup, FormControl, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, } from "@mui/material";
 import { coupons, couponsList } from ".././services/dataset";
 import { useEffect, useState } from "react";
 import { IRaffledCoupon, RaffledCouponsList } from "../components/RaffledCouponsList";
@@ -18,10 +18,10 @@ export function Dashboard() {
     const min = Math.min(...codes);
     const max = Math.max(...codes);
     const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, min, max);
-    const [raffledCoupons, setRaffledCoupons] = useState<IRaffledCoupon[]>([]);
+    const [raffledCoupons, setRaffledCoupons] = useState<{ [key: number]: IRaffledCoupon }>({});
 
     const couponNumber = Number(numberRaffled);
-    const coupon = coupons[couponNumber];
+    const coupon = coupons[couponNumber]
     useEffect(() => {
 
         if (inRaffle)
@@ -32,13 +32,14 @@ export function Dashboard() {
 
         setRaffledCoupons((pre) => {
 
-            const raffledCouponsCopy = [...pre]
-            raffledCouponsCopy.push({
+            const raffledCouponsCopy = { ...pre }
+            const raffledCoupon = {
                 Code: numberRaffled,
                 Name: coupon.Name,
                 Time: new Date()
-            });
+            };
 
+            raffledCouponsCopy[coupon.Code] = raffledCoupon
             return raffledCouponsCopy;
         });
     }, [coupon, inRaffle, numberRaffled])
@@ -55,7 +56,7 @@ export function Dashboard() {
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'success.main', gap: '1vh', padding: '1vh' }}>
             <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
-                <RaffledCouponsList raffledCoupons={raffledCoupons} />
+                <RaffledCouponsList Coupons={Object.values(raffledCoupons)} />
             </Paper>
 
             <Paper elevation={3} sx={{ width: '40%' }}>
@@ -77,7 +78,7 @@ export function Dashboard() {
 
             <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
                 <Rank
-                    raffledCoupons={raffledCoupons}
+                    raffledCoupons={Object.values(raffledCoupons)}
                     rankDisplay={RankDisplay.MultipleIcons}
                     maxRaffle={5}
                 />
