@@ -1,6 +1,6 @@
 import { ICoupon } from "../pages/Dashboard";
 
-export const couponsList: ICoupon[] = [
+const couponsList: ICoupon[] = [
     {
         Code: 1,
         Name: "40 - LUCIANE"
@@ -4802,5 +4802,34 @@ export const couponsList: ICoupon[] = [
         Name: "50 - MARCIO"
     }]
 
-export const coupons: { [Key: number]: ICoupon; } = {};
-couponsList.forEach(x => coupons[x.Code] = x);
+let coupons: { [Key: number]: ICoupon; } = {};
+let participants: { [Key: string]: number; } = {};
+let min = Number.MAX_SAFE_INTEGER;
+let max = Number.MIN_SAFE_INTEGER;
+
+couponsList
+    .sort((a, b) => (a.Code > b.Code) ? -1 : 1)
+    .forEach(coupon => {
+        if (coupon.Code > max)
+            max = coupon.Code;
+
+        if (coupon.Code < min)
+            min = coupon.Code
+
+        coupons[coupon.Code] = coupon;
+
+        const couponsParticipant = participants[coupon.Name];
+
+        if (couponsParticipant)
+            participants[coupon.Name] = couponsParticipant + 1;
+        else
+            participants[coupon.Name] = 1;
+
+    });
+
+export const raffleDataSet = {
+    coupons: coupons,
+    participants: Object.keys(participants).sort((a, b) => (a > b) ? -1 : 1),
+    min: min,
+    max: max
+}
