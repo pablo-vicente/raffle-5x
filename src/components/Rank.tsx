@@ -1,6 +1,5 @@
 import {
     Badge,
-    Box,
     List,
     ListItem,
     ListItemIcon,
