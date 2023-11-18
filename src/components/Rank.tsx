@@ -64,14 +64,14 @@ export function Rank(
         switch (rankDisplay) {
 
             case RankDisplay.MultipleIcons:
-                return <Box>
+                return <>
                     {
                         generateRank(coupons).map((e, i) => e
                             ? <AddReactionOutlined key={i} sx={{ color: 'success.main' }} />
                             : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
 
                     }
-                </Box>
+                </>
 
             case RankDisplay.SingleIcon:
 
