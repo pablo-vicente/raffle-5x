@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export enum RaffleRevealNumbers {
     All = 1,
@@ -84,12 +84,14 @@ export default function useRaffleNumber(
     function randomFromInterval(min: number, max: number) {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
+
+    const start = useCallback(() => {
+        setStartTime(new Date());
+        setNumber(0);
+    }, []);
     return {
         numberRaffled: `${number}`.toString().padStart(maxCaracters, "0"),
         inRaffle: inRaffle,
-        start: () => {
-            setStartTime(new Date());
-            setNumber(0);
-        }
+        start: start
     };
 }
