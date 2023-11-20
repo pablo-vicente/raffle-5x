@@ -1,83 +1,132 @@
-
 import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { raffleDataSet } from ".././services/dataset";
 import { useEffect, useState } from "react";
-import { IRaffledCoupon, RaffledCouponsList } from "../components/RaffledCouponsList";
-import { IRankPartipant, Rank, RankDisplay } from "../components/Rank";
+import { RaffledCouponsList } from "../components/RaffledCouponsList";
+import { Rank, RankDisplay } from "../components/Rank";
 import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
 import { Ticket } from "../components/Ticket";
+import { IRaffledCoupon, IRankPartipant } from "../types";
 
-export type ICoupon = {
-    Code: number,
-    Name: string,
-};
 
 const maxRaffle = 5;
+
+type Raffle = {
+    coupons: { [key: number]: IRaffledCoupon },
+    participants: { [key: string]: IRankPartipant },
+    winner: string,
+    raffleToWinner: boolean
+}
 
 export function Dashboard() {
 
     const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, raffleDataSet.min, raffleDataSet.max);
-    const [raffledCoupons, setRaffledCoupons] = useState<{ [key: number]: IRaffledCoupon }>({});
+    const [raffle, setRaffle] = useState<Raffle>({
+        coupons: {},
+        participants: {},
+        winner: "",
+        raffleToWinner: false
+    });
 
     const couponNumber = Number(numberRaffled);
     const coupon = raffleDataSet.coupons[couponNumber]
+
+    useEffect(() => {
+
+        const rankParticipants: { [key: string]: IRankPartipant } = {};
+        raffleDataSet.participants
+            .forEach(x => {
+                rankParticipants[x] = {
+                    Name: x,
+                    Coupons: []
+                }
+            })
+
+        setRaffle((a) => {
+            const copy: Raffle = {
+                ...a,
+                participants: rankParticipants
+            };
+
+            return copy;
+        });
+    }, [])
+
     useEffect(() => {
 
         if (inRaffle)
             return;
 
-        if (!coupon)
+        if (!coupon) {
+
+            if (raffle.raffleToWinner)
+                start();
             return;
+        }
 
-        setRaffledCoupons((pre) => {
+        setRaffle((raffle) => {
 
-            const raffledCouponsCopy = { ...pre }
             const raffledCoupon = {
                 Code: numberRaffled,
                 Name: coupon.Name,
                 Time: new Date()
             };
 
+            const raffledCouponsCopy = { ...raffle.coupons }
+            const participantsCopy = { ...raffle.participants };
+            const raffleCopy: Raffle = {
+                ...raffle,
+                coupons: raffledCouponsCopy,
+                participants: participantsCopy
+            };
+
             raffledCouponsCopy[coupon.Code] = raffledCoupon
-            return raffledCouponsCopy;
+
+            const participantAtual = participantsCopy[raffledCoupon.Name];
+            const participantCopy: IRankPartipant = {
+                ...participantAtual,
+                Coupons: [...participantAtual.Coupons]
+            };
+            participantCopy.Coupons.push(raffledCoupon);
+            participantsCopy[raffledCoupon.Name] = participantCopy;
+
+            if (participantCopy.Coupons.length >= maxRaffle)
+                raffleCopy.winner = raffledCoupon.Name
+
+            if (raffleCopy.raffleToWinner && !raffleCopy.winner)
+                start();
+
+            return raffleCopy;
         });
-    }, [coupon, inRaffle, numberRaffled])
 
-
-    function generateRank() {
-
-        const dictionary: { [key: string]: IRankPartipant } = {};
-
-        raffleDataSet.participants
-            .forEach(x => {
-                dictionary[x] = {
-                    Name: x,
-                    Coupons: 0
-                }
-            })
-
-        Object
-            .values(raffledCoupons)
-            .forEach(function (raffledCoupon: IRaffledCoupon) {
-                dictionary[raffledCoupon.Name].Coupons += 1
-            });
-
-        return Object.values(dictionary);
-    }
-
+    }, [coupon, inRaffle, numberRaffled, raffle.raffleToWinner, start])
 
 
     const buttons = [
-        <Button key="one" disabled={inRaffle} onClick={() => {
-            start();
-        }}>Sortear</Button>,
-        <Button key="two" disabled={inRaffle}>Sortear Até Acabar</Button>,
+        <Button
+            key="one"
+            disabled={inRaffle || !!raffle.winner}
+            onClick={() => {
+                start();
+            }}
+        >Sortear</Button>,
+        <Button
+            key="two"
+            disabled={inRaffle || !!raffle.winner}
+            onClick={() => {
+
+                setRaffle({
+                    ...raffle,
+                    raffleToWinner: true
+                })
+                start();
+            }}
+        >Sortear Até Acabar</Button>,
     ];
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'success.main', gap: '1vh', padding: '1vh' }}>
             <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
-                <RaffledCouponsList coupons={Object.values(raffledCoupons)} />
+                <RaffledCouponsList coupons={Object.values(raffle.coupons)} />
             </Paper>
 
             <Paper elevation={3} sx={{ width: '40%' }}>
@@ -99,7 +148,7 @@ export function Dashboard() {
 
             <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
                 <Rank
-                    participants={generateRank()}
+                    participants={Object.values(raffle.participants)}
                     display={RankDisplay.MultipleIcons}
                     maxRaffle={maxRaffle}
                 />
