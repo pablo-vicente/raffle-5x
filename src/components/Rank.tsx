@@ -11,11 +11,7 @@ import {
     SentimentSatisfiedOutlined,
     SentimentVeryDissatisfied,
 } from '@mui/icons-material';
-
-export type IRankPartipant = {
-    Name: string,
-    Coupons: number,
-};
+import { IRankPartipant } from "../types";
 
 export enum RankDisplay {
     MultipleIcons = 1,
@@ -101,7 +97,7 @@ export function Rank(
                                 primary={participant.Name}
                             />
                             <ListItemIcon>
-                                {renderParticipant(participant.Coupons)}
+                                {renderParticipant(participant.Coupons.length)}
                             </ListItemIcon>
                         </ListItem>
                     )

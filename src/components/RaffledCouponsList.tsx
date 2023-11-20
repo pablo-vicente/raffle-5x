@@ -6,13 +6,7 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material';
-
-
-export type IRaffledCoupon = {
-    Code: string,
-    Name: string,
-    Time: Date
-};
+import { IRaffledCoupon } from '../types';
 
 export function RaffledCouponsList(
     {
