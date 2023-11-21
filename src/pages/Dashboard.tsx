@@ -58,8 +58,6 @@ export function Dashboard() {
 
         if (!coupon) {
 
-            if (raffle.raffleToWinner)
-                start();
             return;
         }
 
