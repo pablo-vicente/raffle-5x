@@ -70,8 +70,16 @@ export default function useRaffleNumber(
                 let finalNumber = [...leftpart, ...rightPart].join("")
                 randomNumber = Number(finalNumber);
 
-            }
+                if (randomNumber > max) {
 
+                    console.log(randomNumber);
+                    const minRandonNumber = leftpart
+                        .join()
+                        .padEnd(maxCaracters, "0");
+                    randomNumber = randomFromInterval(Number(minRandonNumber), max);
+                }
+
+            }
             setNumber(randomNumber);
 
         }, intervalDuration);
