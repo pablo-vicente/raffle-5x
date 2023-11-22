@@ -72,7 +72,6 @@ export default function useRaffleNumber(
 
                 if (randomNumber > max) {
 
-                    console.log(randomNumber);
                     const minRandonNumber = leftpart
                         .join()
                         .padEnd(maxCaracters, "0");
