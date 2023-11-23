@@ -8,13 +8,16 @@ import { Ticket } from "../components/Ticket";
 import { IRaffledCoupon, IRankPartipant } from "../types";
 
 
-const maxRaffle = 5;
+const maxRaffle = 2;
 
 type Raffle = {
     coupons: { [key: number]: IRaffledCoupon },
     participants: { [key: string]: IRankPartipant },
     winner: string,
-    raffleToWinner: boolean
+    raffleToWinner: {
+        first: boolean,
+        keepRaffling: boolean
+    }
 }
 
 export function Dashboard() {
@@ -24,7 +27,10 @@ export function Dashboard() {
         coupons: {},
         participants: {},
         winner: "",
-        raffleToWinner: false
+        raffleToWinner: {
+            first: false,
+            keepRaffling: false
+        }
     });
 
     const couponNumber = Number(numberRaffled);
@@ -73,6 +79,7 @@ export function Dashboard() {
             const participantsCopy = { ...raffle.participants };
             const raffleCopy: Raffle = {
                 ...raffle,
+                raffleToWinner: { ...raffle.raffleToWinner },
                 coupons: raffledCouponsCopy,
                 participants: participantsCopy
             };
@@ -90,14 +97,30 @@ export function Dashboard() {
             if (participantCopy.Coupons.length >= maxRaffle)
                 raffleCopy.winner = raffledCoupon.Name
 
-            if (raffleCopy.raffleToWinner && !raffleCopy.winner)
-                start();
+            if (raffleCopy.raffleToWinner.first)
+                raffleCopy.raffleToWinner.first = false;
 
             return raffleCopy;
         });
 
-    }, [coupon, inRaffle, numberRaffled, raffle.raffleToWinner, start])
+    }, [coupon, inRaffle, numberRaffled])
 
+
+    useEffect(() => {
+        if (raffle.raffleToWinner.keepRaffling && !raffle.winner) {
+            if (!raffle.raffleToWinner.first)
+                wait(1000);
+            start();
+        }
+
+        function wait(ms: number) {
+            var start = new Date().getTime();
+            var end = start;
+            while (end < start + ms) {
+                end = new Date().getTime();
+            }
+        }
+    }, [raffle, start])
 
     const buttons = [
         <Button
@@ -114,9 +137,11 @@ export function Dashboard() {
 
                 setRaffle({
                     ...raffle,
-                    raffleToWinner: true
+                    raffleToWinner: {
+                        first: true,
+                        keepRaffling: true
+                    }
                 })
-                start();
             }}
         >Sortear Até Acabar</Button>,
     ];
