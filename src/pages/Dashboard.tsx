@@ -161,7 +161,11 @@ export function Dashboard() {
                     }}
                 >
                     <Box sx={{ padding: '2vh' }}>
-                        <Ticket number={numberRaffled} name={coupon ? coupon.Name : ""} />
+                        <Ticket
+                            number={numberRaffled}
+                            name={coupon ? coupon.Name : ""}
+                            golden={!inRaffle && !!coupon}
+                        />
                     </Box>
                     <ButtonGroup aria-label="medium secondary button group">
                         {buttons}
