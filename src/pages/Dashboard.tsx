@@ -6,6 +6,7 @@ import { Rank, RankDisplay } from "../components/Rank";
 import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
 import { Ticket } from "../components/Ticket";
 import { IRaffledCoupon, IRankPartipant } from "../types";
+import { ModalWinner } from "../components/Modal";
 
 
 const maxRaffle = 2;
@@ -171,6 +172,12 @@ export function Dashboard() {
                         {buttons}
                     </ButtonGroup>
                 </Box>
+
+                {
+                    raffle.winner
+                        ? <ModalWinner name={raffle.winner} />
+                        : <></>
+                }
             </Paper>
 
             <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
