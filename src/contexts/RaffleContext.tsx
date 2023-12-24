@@ -10,18 +10,35 @@ type IRaffleContext = {
     generateFromCouponsList: (couponsListRaw: string) => string[]
 }
 
-export const RaffleContext = createContext({} as IRaffleContext)
+export const RaffleContext = createContext<IRaffleContext>({} as IRaffleContext)
 
 export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
-    const [raffleContext, setRaffleContext] = useState<IRaffleInput>({} as IRaffleInput);
+    const [raffleContext, setRaffleContext] = useState<IRaffleInput>({
+        Max: 0,
+        Min: 0,
+        Coupons: {},
+        Participants: {}
+    });
 
     const setNewRaffleInput = (couponsListRaw: string): string[] => {
 
-        const result = generaFromCouponsList(couponsListRaw);
+        const result = generateFromCouponsList(couponsListRaw);
 
-        setRaffleContext(result.RaffleDataSet);
+        if (Array.isArray(result)) {
 
-        return result.Errors;
+            setRaffleContext({
+                Max: 0,
+                Min: 0,
+                Coupons: {},
+                Participants: {}
+            });
+
+            return result;
+        }
+
+        setRaffleContext(result);
+
+        return [];
     };
 
     return <RaffleContext.Provider value={{
@@ -33,25 +50,19 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 }
 
 
-function generaFromCouponsList(couponsListRaw: string): {
-    RaffleDataSet: IRaffleInput,
-    Errors: string[]
-} {
+function generateFromCouponsList(couponsListRaw: string): IRaffleInput | string[] {
 
-    let result: {
-        RaffleDataSet: IRaffleInput,
-        Errors: string[]
-    } = {
-        Errors: [],
-        RaffleDataSet: {
-            Coupons: {},
-            Participants: {},
-            Min: Number.MAX_SAFE_INTEGER,
-            Max: Number.MIN_SAFE_INTEGER,
-        }
-    };
+    let errors: string[] = [];
+
+    let raffleInput: IRaffleInput = {
+        Coupons: {},
+        Participants: {},
+        Min: Number.MAX_SAFE_INTEGER,
+        Max: Number.MIN_SAFE_INTEGER,
+    }
+
     if (!couponsListRaw)
-        return result;
+        return errors;
 
     const lines = couponsListRaw.trim().split("\n");
 
@@ -63,23 +74,23 @@ function generaFromCouponsList(couponsListRaw: string): {
 
         const parts = element.split(",");
         if (parts.length !== 2) {
-            result.Errors.push(`Linha ${index + 1}: Valor: '${element}' formato inválido (esperado [CUPON][,][NOME])`);
+            errors.push(`Linha ${index + 1}: Formato inválido (esperado CUPON,NOME)`);
             continue;
         }
 
         const partNumber = parts[0].trim();
         const partname = parts[1].trim();
         const number = Number(partNumber);
-        const repeated = !!result.RaffleDataSet.Coupons[number];
+        const repeated = !!raffleInput.Coupons[number];
 
         if (!number || number <= 0)
-            result.Errors.push(`Linha ${index + 1}: Cupom: '${partNumber}' não é número inválido (cupom deve ser um número maior do que 0).`);
+            errors.push(`Linha ${index + 1}: Cupom: '${partNumber}' não é número inválido (cupom deve ser um número maior do que 0).`);
 
         if (!partname)
-            result.Errors.push(`Linha ${index + 1}: Nome: está em branco.`);
+            errors.push(`Linha ${index + 1}: Nome: está em branco.`);
 
         if (repeated)
-            result.Errors.push(`Linha ${index + 1}: Cupom: '${number}' já foi adicionado (cupom repetido).`);
+            errors.push(`Linha ${index + 1}: Cupom: '${number}' já foi adicionado (cupom repetido).`);
 
         if (!number || !partname || repeated)
             continue;
@@ -90,26 +101,27 @@ function generaFromCouponsList(couponsListRaw: string): {
         }
 
 
-        if (coupon.Code > result.RaffleDataSet.Max)
-            result.RaffleDataSet.Max = coupon.Code;
+        if (coupon.Code > raffleInput.Max)
+            raffleInput.Max = coupon.Code;
 
-        if (coupon.Code < result.RaffleDataSet.Min)
-            result.RaffleDataSet.Min = coupon.Code
+        if (coupon.Code < raffleInput.Min)
+            raffleInput.Min = coupon.Code
 
-        result.RaffleDataSet.Coupons[number] = coupon;
-        const couponsParticipant = result.RaffleDataSet.Participants[coupon.Name];
-        result.RaffleDataSet.Participants[coupon.Name] = couponsParticipant
+        raffleInput.Coupons[number] = coupon;
+        const couponsParticipant = raffleInput.Participants[coupon.Name];
+        raffleInput.Participants[coupon.Name] = couponsParticipant
             ? couponsParticipant + 1
             : 1
 
     }
     const keys = Object
-        .keys(result.RaffleDataSet.Coupons)
+        .keys(raffleInput.Coupons)
         .length;
 
-    if (keys !== result.RaffleDataSet.Max)
-        result.Errors.push(`O maior cupom é '${result.RaffleDataSet.Max}', mas foram encontrados apenas '${keys}' cupons.`)
+    if (keys !== raffleInput.Max)
+        errors.push(`O maior cupom é '${raffleInput.Max}', mas foram encontrados apenas '${keys}' cupons.`)
 
-
-    return result;
+    return errors.length === 0
+        ? raffleInput
+        : errors;
 }
