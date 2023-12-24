@@ -84,7 +84,7 @@ function generateFromCouponsList(couponsListRaw: string): IRaffleInput | string[
         const repeated = !!raffleInput.Coupons[number];
 
         if (!number || number <= 0)
-            errors.push(`Linha ${index + 1}: Cupom: '${partNumber}' não é número inválido (cupom deve ser um número maior do que 0).`);
+            errors.push(`Linha ${index + 1}: Cupom: '${partNumber}' inválido (cupom deve ser um número maior do que 0).`);
 
         if (!partname)
             errors.push(`Linha ${index + 1}: Nome: está em branco.`);
@@ -118,7 +118,7 @@ function generateFromCouponsList(couponsListRaw: string): IRaffleInput | string[
         .keys(raffleInput.Coupons)
         .length;
 
-    if (keys !== raffleInput.Max)
+    if (keys !== raffleInput.Max && raffleInput.Max > 0)
         errors.push(`O maior cupom é '${raffleInput.Max}', mas foram encontrados apenas '${keys}' cupons.`)
 
     return errors.length === 0
