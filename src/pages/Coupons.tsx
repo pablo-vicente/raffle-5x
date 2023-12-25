@@ -1,18 +1,14 @@
 import { Box, Button, List, ListItem, ListItemIcon, ListSubheader, Paper, Typography } from "@mui/material";
 import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn } from "@mui/icons-material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { RaffleContext } from "../contexts/RaffleContext";
 import { Link } from "react-router-dom";
 import { Page } from "../App";
 
 export function Coupons() {
-    const { raffleInput, generateFromCouponsList } = useContext(RaffleContext);
+    const { raffleInput, generateFromCouponsList, originalInput } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
-
-    useEffect(() => {
-        generateFromCouponsList("");
-    }, [generateFromCouponsList])
 
     const dysplayResults = () => {
 
@@ -111,6 +107,7 @@ export function Coupons() {
             >
 
                 <Textarea
+                    value={originalInput}
                     onChange={(e) => {
 
                         const textAreaValue = e.target.value;
