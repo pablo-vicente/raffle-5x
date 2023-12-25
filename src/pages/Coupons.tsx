@@ -31,7 +31,7 @@ Ex:
     Nome 3, 700`
 
 export function Coupons() {
-    const { raffleInput, readCouponsFromText, originalInput } = useContext(RaffleContext);
+    const { raffleInput, readRaffleInputFromText, originalInput } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
     const [typeInputList, setTypeInputList] = useState<ListInput>(ListInput.AllCupons);
 
@@ -133,7 +133,7 @@ export function Coupons() {
     };
 
     const handleTextAreaInput = (textAreaValue: string, listType: ListInput) => {
-        const errors = readCouponsFromText(textAreaValue, listType);
+        const errors = readRaffleInputFromText(textAreaValue, listType);
         setCouponsErrors(errors);
     }
 

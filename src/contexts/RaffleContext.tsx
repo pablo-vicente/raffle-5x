@@ -13,7 +13,7 @@ export enum ListInput {
 type IRaffleContext = {
     raffleInput: IRaffleInput,
     originalInput: string,
-    readCouponsFromText: (couponsListRaw: string, listType: ListInput) => string[]
+    readRaffleInputFromText: (couponsListRaw: string, listType: ListInput) => string[]
 }
 
 
@@ -61,7 +61,7 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 
     return <RaffleContext.Provider value={{
         raffleInput: raffleContext,
-        readCouponsFromText: setNewRaffleInput,
+        readRaffleInputFromText: setNewRaffleInput,
         originalInput: originalInput
     } as IRaffleContext}>
         {children}
