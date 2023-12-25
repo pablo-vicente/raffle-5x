@@ -58,8 +58,12 @@ const TextareaBase = styled(TextareaAutosize)(
 
 
 export function Textarea({
-  onChange
-}: { onChange: React.ChangeEventHandler<HTMLTextAreaElement> }) {
+  onChange,
+  value
+}: {
+  onChange: React.ChangeEventHandler<HTMLTextAreaElement>,
+  value?: string | number | readonly string[] | undefined
+}) {
 
   return (
     <TextareaBase
@@ -70,6 +74,7 @@ Ex:
     2, Nome 2
     3, Nome 3`}
       onChange={onChange}
+      value={value}
     />
   )
 }

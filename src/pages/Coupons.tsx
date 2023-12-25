@@ -1,19 +1,18 @@
 import { Box, Button, List, ListItem, ListItemIcon, ListSubheader, Paper, Typography } from "@mui/material";
 import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn } from "@mui/icons-material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RaffleContext } from "../contexts/RaffleContext";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Page } from "../App";
 
 export function Coupons() {
     const { raffleInput, generateFromCouponsList } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
-    const navigate = useNavigate();
 
-    const handleClick = () => {
-        navigate("/" + Page.Dashboard);
-    }
+    useEffect(() => {
+        generateFromCouponsList("");
+    }, [generateFromCouponsList])
 
     const dysplayResults = () => {
 
@@ -132,6 +131,8 @@ export function Coupons() {
                     paddingTop: '5vh'
                 }}>
                 <Button
+                    component={Link}
+                    to={"/" + Page.Dashboard}
                     sx={{
                         width: '100%',
                         marginLeft: '31vw',
@@ -140,7 +141,6 @@ export function Coupons() {
                     disabled={raffleInput.Max === 0}
                     variant="outlined"
                     startIcon={<AssignmentTurnedIn />}
-                    onClick={handleClick}
                 >
                     Iniciar Sorteio
                 </Button>
