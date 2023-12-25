@@ -5,11 +5,17 @@ type RaffleContextProps = {
     children: React.ReactNode
 }
 
+export enum ListInput {
+    AllCupons = 1,
+    Participants = 2
+}
+
 type IRaffleContext = {
     raffleInput: IRaffleInput,
     originalInput: string,
-    generateFromCouponsList: (couponsListRaw: string) => string[]
+    readCouponsFromText: (couponsListRaw: string, listType: ListInput) => string[]
 }
+
 
 export const RaffleContext = createContext<IRaffleContext>({} as IRaffleContext)
 
@@ -22,10 +28,19 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
         Participants: {}
     });
 
-    const setNewRaffleInput = useCallback((couponsListRaw: string): string[] => {
+    const setNewRaffleInput = useCallback((couponsListRaw: string, listType: ListInput): string[] => {
 
         setOriginalInput(couponsListRaw);
-        const result = generateFromCouponsList(couponsListRaw);
+
+        let result;
+        switch (listType) {
+            case ListInput.AllCupons:
+                result = readCouponsFromText(couponsListRaw);
+                break;
+            case ListInput.Participants:
+                result = ["Não Implementado"]
+                break
+        }
 
         if (Array.isArray(result)) {
 
@@ -46,7 +61,7 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 
     return <RaffleContext.Provider value={{
         raffleInput: raffleContext,
-        generateFromCouponsList: setNewRaffleInput,
+        readCouponsFromText: setNewRaffleInput,
         originalInput: originalInput
     } as IRaffleContext}>
         {children}
@@ -54,7 +69,7 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 }
 
 
-function generateFromCouponsList(couponsListRaw: string): IRaffleInput | string[] {
+function readCouponsFromText(couponsListRaw: string): IRaffleInput | string[] {
 
     let errors: string[] = [];
 
