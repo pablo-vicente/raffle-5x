@@ -1,8 +1,8 @@
-import { Alert, Box, Button, List, ListItem, ListItemIcon, ListSubheader, Paper, Typography, styled } from "@mui/material";
+import { Box, Button, FormControlLabel, List, ListItem, ListItemIcon, ListSubheader, Paper, Radio, RadioGroup, Tooltip, Typography, styled } from "@mui/material";
 import { Textarea } from "../components/TextArea";
-import { AssignmentTurnedIn, CloudUpload } from "@mui/icons-material";
+import { AssignmentTurnedIn, CloudUpload, LiveHelp } from "@mui/icons-material";
 import { ChangeEvent, useContext, useState } from "react";
-import { RaffleContext } from "../contexts/RaffleContext";
+import { ListInput, RaffleContext } from "../contexts/RaffleContext";
 import { Link } from "react-router-dom";
 import { Page } from "../App";
 
@@ -18,9 +18,22 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
+const placeholderAllCupons = `Escreva aqui os cupons e participantes, separados por vírgula e quebra de linha (Enter). 
+Ex: 
+    1, Nome 1
+    2, Nome 2
+    3, Nome 3`;
+
+const placeholderParticipants = `Escreva aqui os participantes e sua quantidades de cupons, separados por vírgula e quebra de linha (Enter). 
+Ex: 
+    Nome 1, 500
+    Nome 2, 600
+    Nome 3, 700`
+
 export function Coupons() {
-    const { raffleInput, generateFromCouponsList, originalInput } = useContext(RaffleContext);
+    const { raffleInput, readCouponsFromText, originalInput } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
+    const [typeInputList, setTypeInputList] = useState<ListInput>(ListInput.AllCupons);
 
     const dysplayResults = () => {
 
@@ -113,6 +126,17 @@ export function Coupons() {
         });
     };
 
+    const handleInputListChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const listType = Number((event.target as HTMLInputElement).value);
+        setTypeInputList(listType);
+        handleTextAreaInput(originalInput, listType);
+    };
+
+    const handleTextAreaInput = (textAreaValue: string, listType: ListInput) => {
+        const errors = readCouponsFromText(textAreaValue, listType);
+        setCouponsErrors(errors);
+    }
+
     return (
         <Box>
             <Typography
@@ -125,23 +149,59 @@ export function Coupons() {
                 variant="h1">
                 Cupons
             </Typography>
+
             <Box
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',
                     verticalAlign: 'midle',
-                    paddingTop: '5vh'
+                    marginTop: '2vh',
+                }}
+            >
+                <RadioGroup
+                    row
+                    value={typeInputList}
+                    onChange={handleInputListChange}>
+                    <FormControlLabel
+                        value={ListInput.AllCupons}
+                        control={<Radio />}
+                        label="Todos os Cupons"
+                    />
+                    <FormControlLabel
+                        value={ListInput.Participants}
+                        control={<Radio />}
+                        label="Participantes"
+                    />
+                </RadioGroup>
+                <Tooltip title={
+                    <>
+                        <Typography color="inherit">
+                            <b>Todos os Cupons</b>: Lista com todos os cupons já definidos.
+                        </Typography>
+                        <Typography color="inherit">
+                            <b>Participantes</b>: Lista com todos os participantes e sua quantidade de cupons, será sorteado os cupons.
+                        </Typography>
+                    </>
+
+                }>
+                    <LiveHelp sx={{ color: 'warning.main' }} />
+                </Tooltip>
+            </Box>
+
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    verticalAlign: 'midle',
                 }}
             >
 
                 <Textarea
+                    placeholder={typeInputList === ListInput.AllCupons
+                        ? placeholderAllCupons
+                        : placeholderParticipants}
                     value={originalInput}
-                    onChange={(e) => {
-
-                        const textAreaValue = e.target.value;
-                        const errors = generateFromCouponsList(textAreaValue);
-                        setCouponsErrors(errors);
-                    }}
+                    onChange={(e) => handleTextAreaInput(e.target.value, typeInputList)}
                 />
 
                 {dysplayResults()}
@@ -173,8 +233,7 @@ export function Coupons() {
                             if (file) {
                                 try {
                                     const content = await readFile(file);
-                                    const errors = generateFromCouponsList(content);
-                                    setCouponsErrors(errors);
+                                    handleTextAreaInput(content, typeInputList);
                                 } catch (error) {
                                     console.error('Error reading file:', error);
                                 }
