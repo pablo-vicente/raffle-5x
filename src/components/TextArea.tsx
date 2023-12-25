@@ -58,21 +58,19 @@ const TextareaBase = styled(TextareaAutosize)(
 
 
 export function Textarea({
+  placeholder,
   onChange,
   value
 }: {
+  placeholder: string,
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>,
-  value?: string | number | readonly string[] | undefined
+  value?: string | number | readonly string[] | undefined,
 }) {
 
   return (
     <TextareaBase
       maxRows={4}
-      placeholder={`Escreva aqui os cupons e participantes, separados por vírgula e quebra de linha (Enter). 
-Ex: 
-    1, Nome 1
-    2, Nome 2
-    3, Nome 3`}
+      placeholder={placeholder}
       onChange={onChange}
       value={value}
     />
