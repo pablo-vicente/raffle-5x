@@ -163,7 +163,7 @@ export function Coupons() {
                     variant="contained"
                     startIcon={<CloudUpload />}
                 >
-                    Ou envie um arquivo csv/txt
+                    Ou envie um arquivo txt
                     <VisuallyHiddenInput
                         type="file"
                         accept=".txt"
