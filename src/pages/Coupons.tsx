@@ -3,10 +3,17 @@ import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn } from "@mui/icons-material";
 import { useContext, useState } from "react";
 import { RaffleContext } from "../contexts/RaffleContext";
+import { useNavigate } from "react-router-dom";
+import { Page } from "../App";
 
 export function Coupons() {
     const { raffleInput, generateFromCouponsList } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate("/" + Page.Dashboard);
+    }
 
     const dysplayResults = () => {
 
@@ -133,7 +140,7 @@ export function Coupons() {
                     disabled={raffleInput.Max === 0}
                     variant="outlined"
                     startIcon={<AssignmentTurnedIn />}
-                // onClick={handleClick}
+                    onClick={handleClick}
                 >
                     Iniciar Sorteio
                 </Button>
