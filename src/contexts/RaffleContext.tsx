@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useCallback, useState } from 'react'
 import { ICoupon, IRaffleInput } from '../types'
 
 type RaffleContextProps = {
@@ -7,12 +7,14 @@ type RaffleContextProps = {
 
 type IRaffleContext = {
     raffleInput: IRaffleInput,
+    originalInput: string,
     generateFromCouponsList: (couponsListRaw: string) => string[]
 }
 
 export const RaffleContext = createContext<IRaffleContext>({} as IRaffleContext)
 
 export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
+    const [originalInput, setOriginalInput] = useState<string>("");
     const [raffleContext, setRaffleContext] = useState<IRaffleInput>({
         Max: 0,
         Min: 0,
@@ -20,8 +22,9 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
         Participants: {}
     });
 
-    const setNewRaffleInput = (couponsListRaw: string): string[] => {
+    const setNewRaffleInput = useCallback((couponsListRaw: string): string[] => {
 
+        setOriginalInput(couponsListRaw);
         const result = generateFromCouponsList(couponsListRaw);
 
         if (Array.isArray(result)) {
@@ -39,11 +42,12 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
         setRaffleContext(result);
 
         return [];
-    };
+    }, [])
 
     return <RaffleContext.Provider value={{
         raffleInput: raffleContext,
-        generateFromCouponsList: setNewRaffleInput
+        generateFromCouponsList: setNewRaffleInput,
+        originalInput: originalInput
     } as IRaffleContext}>
         {children}
     </RaffleContext.Provider>
