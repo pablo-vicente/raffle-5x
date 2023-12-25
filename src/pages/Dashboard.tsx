@@ -1,17 +1,19 @@
 import { Box, Button, ButtonGroup, Paper } from "@mui/material";
-import { raffleDataSet } from ".././services/dataset";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RaffledCouponsList } from "../components/RaffledCouponsList";
 import { Rank, RankDisplay } from "../components/Rank";
-import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
 import { Ticket } from "../components/Ticket";
 import { IRaffledCoupon, IRankPartipant } from "../types";
 import { ModalWinner } from "../components/Modal";
+import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
+import { RaffleContext } from "../contexts/RaffleContext";
+import { useNavigate } from "react-router-dom";
+import { Page } from "../App";
 
 
 const maxRaffle = 2;
 
-type Raffle = {
+type IRaffle = {
     coupons: { [key: number]: IRaffledCoupon },
     participants: { [key: string]: IRankPartipant },
     winner: string,
@@ -22,9 +24,10 @@ type Raffle = {
 }
 
 export function Dashboard() {
-
-    const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, raffleDataSet.min, raffleDataSet.max);
-    const [raffle, setRaffle] = useState<Raffle>({
+    const navigate = useNavigate();
+    const { raffleInput } = useContext(RaffleContext);
+    const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, raffleInput.Min, raffleInput.Max);
+    const [raffle, setRaffle] = useState<IRaffle>({
         coupons: {},
         participants: {},
         winner: "",
@@ -34,13 +37,13 @@ export function Dashboard() {
         }
     });
 
-    const couponNumber = Number(numberRaffled);
-    const coupon = raffleDataSet.coupons[couponNumber]
-
     useEffect(() => {
 
+        if (raffleInput.Max === 0)
+            navigate("/" + Page.Coupons);
+
         const rankParticipants: { [key: string]: IRankPartipant } = {};
-        raffleDataSet.participants
+        Object.keys(raffleInput.Participants)
             .forEach(x => {
                 rankParticipants[x] = {
                     Name: x,
@@ -49,15 +52,17 @@ export function Dashboard() {
             })
 
         setRaffle((a) => {
-            const copy: Raffle = {
+            const copy: IRaffle = {
                 ...a,
                 participants: rankParticipants
             };
 
             return copy;
         });
-    }, [])
+    }, [navigate, raffleInput.Max, raffleInput.Participants])
 
+    const couponNumber = Number(numberRaffled);
+    const coupon = raffleInput.Coupons[couponNumber]
     useEffect(() => {
 
         if (inRaffle)
@@ -78,7 +83,7 @@ export function Dashboard() {
 
             const raffledCouponsCopy = { ...raffle.coupons }
             const participantsCopy = { ...raffle.participants };
-            const raffleCopy: Raffle = {
+            const raffleCopy: IRaffle = {
                 ...raffle,
                 raffleToWinner: { ...raffle.raffleToWinner },
                 coupons: raffledCouponsCopy,
