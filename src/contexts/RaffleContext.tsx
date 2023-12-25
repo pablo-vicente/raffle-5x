@@ -38,7 +38,7 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
                 result = readCouponsFromText(couponsListRaw);
                 break;
             case ListInput.Participants:
-                result = ["Não Implementado"]
+                result = generateCouponsFromText(couponsListRaw);
                 break
         }
 
@@ -86,7 +86,7 @@ function readCouponsFromText(couponsListRaw: string): IRaffleInput | string[] {
     const lines = couponsListRaw.trim().split("\n");
 
     for (let index = 0; index < lines.length; index++) {
-        const element = lines[index].trim()
+        const element = lines[index].trim();
 
         if (!element)
             continue;
@@ -143,4 +143,85 @@ function readCouponsFromText(couponsListRaw: string): IRaffleInput | string[] {
     return errors.length === 0
         ? raffleInput
         : errors;
+}
+
+function generateCouponsFromText(couponsListRaw: string): IRaffleInput | string[] {
+    let errors: string[] = [];
+
+    let raffleInput: IRaffleInput = {
+        Coupons: {},
+        Participants: {},
+        Min: Number.MAX_SAFE_INTEGER,
+        Max: Number.MIN_SAFE_INTEGER,
+    }
+
+    if (!couponsListRaw)
+        return errors;
+
+    const lines = couponsListRaw.trim().split("\n");
+
+    for (let index = 0; index < lines.length; index++) {
+        const element = lines[index].trim();
+
+        if (!element)
+            continue;
+
+        const parts = element.split(",");
+        if (parts.length !== 2) {
+            errors.push(`Linha ${index + 1}: Formato inválido (esperado NOME,CUPONS)`);
+            continue;
+        }
+
+        const partname = parts[0].trim();
+        const partNumber = parts[1].trim();
+        const numberOfCoupons = Number(partNumber);
+        const repeated = !!raffleInput.Participants[partname];
+
+        if (!partname)
+            errors.push(`Linha ${index + 1}: Nome: está em branco.`);
+
+        if (!numberOfCoupons || numberOfCoupons <= 0)
+            errors.push(`Linha ${index + 1}: Quantidade de Cupons: '${partNumber}' inválida (cupons devem ser um número maior do que 0).`);
+
+        if (repeated)
+            errors.push(`Linha ${index + 1}: Nome: '${partname}' já foi adicionado (nome repetido).`);
+
+        if (!numberOfCoupons || !partname || repeated)
+            continue;
+
+        raffleInput.Participants[partname] = numberOfCoupons;
+    }
+
+    if (errors.length !== 0)
+        return errors;
+
+    const participantsRandonNumber = Object
+        .entries(raffleInput.Participants)
+        .flatMap(([name, coupons]) => {
+
+            return [...Array(coupons).keys()]
+                .map(_ => {
+                    return {
+                        name: name,
+                        randon: Math.random()
+                    }
+                })
+        })
+        .sort((a, b) => (a.randon > b.randon) ? -1 : 1);
+
+    participantsRandonNumber
+        .forEach((p, i) => {
+
+            const coupon: ICoupon = {
+                Code: i + 1,
+                Name: p.name
+            }
+            raffleInput.Coupons[coupon.Code] = coupon;
+        });
+
+
+    raffleInput.Min = 1;
+    raffleInput.Max = participantsRandonNumber.length;
+
+    return raffleInput;
 }
