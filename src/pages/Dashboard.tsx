@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Paper, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RaffledCouponsList } from "../components/RaffledCouponsList";
 import { Rank, RankDisplay } from "../components/Rank";
