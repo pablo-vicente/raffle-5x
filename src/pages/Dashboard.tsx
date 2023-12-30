@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Paper } from "@mui/material";
+import { Box, Button, ButtonGroup, Paper, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RaffledCouponsList } from "../components/RaffledCouponsList";
 import { Rank, RankDisplay } from "../components/Rank";
@@ -152,46 +152,174 @@ export function Dashboard() {
         >Sortear Até Acabar</Button>,
     ];
 
-    return (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'success.main', gap: '1vh', padding: '1vh' }}>
-            <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
-                <RaffledCouponsList coupons={Object.values(raffle.coupons)} />
-            </Paper>
+    let tipe = 1;
 
-            <Paper elevation={3} sx={{ width: '40%' }}>
+    return (
+
+        tipe === 1 ?
+
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '2vh',
+                padding: '2vh',
+                flexDirection: 'column'
+            }}>
+
+
+                <Box>
+                    <Paper
+                        elevation={10}
+                    >
+                        <Box
+                            sx={{
+                                height: '50vh',
+                                width: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
+                        >
+                            <Box>
+                                <Ticket
+                                    number={numberRaffled}
+                                    name={coupon ? coupon.Name : ""}
+                                    golden={!inRaffle && !!coupon}
+                                />
+                            </Box>
+                            <ButtonGroup sx={{
+                                paddingTop: '2vh'
+                            }}>
+                                {buttons}
+                            </ButtonGroup>
+                        </Box>
+
+                        {
+                            raffle.winner
+                                ? <ModalWinner name={raffle.winner} />
+                                : <></>
+                        }
+
+                    </Paper>
+                </Box>
                 <Box
                     sx={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Box sx={{ padding: '2vh' }}>
-                        <Ticket
-                            number={numberRaffled}
-                            name={coupon ? coupon.Name : ""}
-                            golden={!inRaffle && !!coupon}
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        gap: '2vh',
+                    }}>
+
+                    <Paper
+                        elevation={10}
+                        sx={{
+                            height: '45vh',
+                            overflowY: 'auto',
+                            width: '100%'
+                        }}>
+                        <Rank
+                            participants={Object.values(raffle.participants)}
+                            display={RankDisplay.MultipleIcons}
+                            maxRaffle={maxRaffle}
                         />
-                    </Box>
-                    <ButtonGroup aria-label="medium secondary button group">
-                        {buttons}
-                    </ButtonGroup>
+                    </Paper>
+
+                    <Paper
+                        elevation={10}
+                        sx={{
+                            height: '45vh',
+                            overflowY: 'auto',
+                            width: '100%'
+                        }}>
+                        <RaffledCouponsList coupons={Object.values(raffle.coupons)} />
+                    </Paper>
                 </Box>
 
-                {
-                    raffle.winner
-                        ? <ModalWinner name={raffle.winner} />
-                        : <></>
-                }
-            </Paper>
+            </Box>
 
-            <Paper sx={{ width: '100%', height: '100vh', overflowY: 'auto', maxWidth: '30%' }}>
-                <Rank
-                    participants={Object.values(raffle.participants)}
-                    display={RankDisplay.MultipleIcons}
-                    maxRaffle={maxRaffle}
-                />
-            </Paper>
-        </Box>
+            :
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '2vh',
+                padding: '2vh',
+            }}>
+                <Box>
+
+                    <Paper
+                        elevation={10}
+                        sx={{
+                            height: '100%',
+                            width: '70vw',
+                            display: 'flex',
+                            justifyContent: "center"
+                        }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: "center"
+                            }}
+                        >
+                            <Box sx={{
+                                padding: '2vh'
+                            }}>
+                                <Ticket
+                                    number={numberRaffled}
+                                    name={coupon ? coupon.Name : ""}
+                                    golden={!inRaffle && !!coupon}
+                                />
+                            </Box>
+                            <ButtonGroup aria-label="medium secondary button group">
+                                {buttons}
+                            </ButtonGroup>
+                        </Box>
+
+                        {
+                            raffle.winner
+                                ? <ModalWinner name={raffle.winner} />
+                                : <></>
+                        }
+
+                    </Paper>
+
+                </Box >
+
+                <Box
+                    sx={{
+                        width: '30vw',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignContent: 'center',
+                        gap: '2vh',
+                        flexDirection: 'column'
+                    }}>
+                    <Paper
+                        elevation={10}
+                        sx={{
+                            height: '45vh',
+                            overflowY: 'auto',
+
+                        }}>
+                        <Rank
+                            participants={Object.values(raffle.participants)}
+                            display={RankDisplay.MultipleIcons}
+                            maxRaffle={maxRaffle}
+                        />
+                    </Paper>
+
+                    <Paper
+                        elevation={10}
+                        sx={{
+                            height: '45vh',
+                            overflowY: 'auto',
+                        }}>
+                        <RaffledCouponsList coupons={Object.values(raffle.coupons)} />
+                    </Paper>
+
+                </Box >
+            </Box >
     )
 }
