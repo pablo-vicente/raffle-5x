@@ -39,7 +39,7 @@ export function RaffledCouponsList(
                             <ListItemIcon>
                                 {coupon.Code}
                             </ListItemIcon>
-<ListItemText
+                            <ListItemText
                                 primary={coupon.Name}
                             />
                         </ListItem>
