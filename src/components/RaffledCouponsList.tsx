@@ -18,7 +18,7 @@ export function RaffledCouponsList(
     return (
         <List
             dense={true}
-            sx={{ width: '100%', maxWidth: 360, }}
+            sx={{ width: '100%' }}
             subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
                     <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
@@ -39,7 +39,7 @@ export function RaffledCouponsList(
                             <ListItemIcon>
                                 {coupon.Code}
                             </ListItemIcon>
-                            <ListItemText
+<ListItemText
                                 primary={coupon.Name}
                             />
                         </ListItem>
