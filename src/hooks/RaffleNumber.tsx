@@ -10,10 +10,11 @@ export default function useRaffleNumber(
     raffleReveal: RaffleRevealNumbers,
     min: number,
     max: number,
-    duration: number = 5000,
+    durationSencods: number = 5,
     maxDurationFrameUpdate: number = 200
 ) {
 
+    const duration = durationSencods * 1000;
     const [number, setNumber] = useState<number>(0);
     const [startTime, setStartTime] = useState<Date>(new Date(0));
 
