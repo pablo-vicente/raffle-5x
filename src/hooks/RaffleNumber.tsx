@@ -11,7 +11,7 @@ export default function useRaffleNumber(
     min: number,
     max: number,
     duration: number = 5000,
-    maxDurationFrameUpdate = 200
+    maxDurationFrameUpdate: number = 200
 ) {
 
     const [number, setNumber] = useState<number>(0);
