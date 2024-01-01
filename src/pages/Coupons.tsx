@@ -1,10 +1,12 @@
-import { Box, Button, FormControlLabel, List, ListItem, ListItemIcon, ListSubheader, Paper, Radio, RadioGroup, Tooltip, Typography, styled } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControlLabel, FormLabel, List, ListItem, ListItemIcon, ListSubheader, Paper, Radio, RadioGroup, TextField, Tooltip, Typography, styled } from "@mui/material";
 import { Textarea } from "../components/TextArea";
-import { AssignmentTurnedIn, CloudUpload, LiveHelp } from "@mui/icons-material";
-import { ChangeEvent, useContext, useState } from "react";
+import { AssignmentTurnedIn, CloudUpload, ExpandMore, LiveHelp } from "@mui/icons-material";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { ListInput, RaffleContext } from "../contexts/RaffleContext";
 import { Link } from "react-router-dom";
 import { Page } from "../App";
+import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
+import { RankDisplay, renderParticipant } from "../components/Rank";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -30,11 +32,58 @@ Ex:
     Nome 2, 600
     Nome 3, 700`
 
+function RaffleNumberExemple({
+    raffleReveal,
+    duration,
+}: {
+    raffleReveal: RaffleRevealNumbers,
+    duration: number,
+}) {
+    const [raffleRevealSelected, setRaffleRevealSelected] = useState<RaffleRevealNumbers>(0 as RaffleRevealNumbers);
+    const [raffleDuration, setRaffleDuration] = useState<number>(0);
+    const { numberRaffled, inRaffle, start } = useRaffleNumber(
+        raffleReveal,
+        1,
+        99999,
+        duration);
+
+    useEffect(() => {
+
+        if (raffleRevealSelected === raffleReveal && raffleDuration === duration)
+            return;
+
+        if (raffleRevealSelected !== raffleReveal)
+            setRaffleRevealSelected(raffleReveal);
+
+        if (raffleDuration !== duration)
+            setRaffleDuration(duration);
+
+
+        if (inRaffle)
+            return;
+        start();
+
+    }, [duration, inRaffle, raffleDuration, raffleReveal, raffleRevealSelected, start])
+
+    return (<Box sx={{
+        backgroundColor: 'goldenrod',
+        color: 'white'
+    }}
+    >
+        Ex: {numberRaffled}
+    </Box >);
+}
+
 export function Coupons() {
     const { raffleInput, readRaffleInputFromText, originalInput } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
     const [typeInputList, setTypeInputList] = useState<ListInput>(ListInput.AllCupons);
 
+    // TODO CONTEXT
+    const [timeRaffle, setTimeRaffle] = useState<number>(5);
+    const [raffleRevealNumbers, setRaffleRevealNumbers] = useState<RaffleRevealNumbers>(RaffleRevealNumbers.RightToLeft);
+    const [couponsWinner, setCuponsWinner] = useState<number>(5);
+    const [rankDisplay, setRankDisplay] = useState<RankDisplay>(RankDisplay.MultipleIcons);
     const dysplayResults = () => {
 
         if (couponsErrors.length === 0 && raffleInput.Max === 0)
@@ -137,6 +186,23 @@ export function Coupons() {
         setCouponsErrors(errors);
     }
 
+    const handleRaffleRevealNumbers = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+        const selectedOption = Number((event.target as HTMLInputElement).value);
+        setRaffleRevealNumbers(selectedOption);
+    };
+
+    const handleTimeRaffleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTimeRaffle(Number((event.target as HTMLInputElement).value));
+    };
+
+    const handleCouponsWinnerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCuponsWinner(Number((event.target as HTMLInputElement).value));
+    };
+
+    const handleRankDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRankDisplay(Number((event.target as HTMLInputElement).value));
+    };
     return (
         <Box>
             <Typography
@@ -164,12 +230,12 @@ export function Coupons() {
                     onChange={handleInputListChange}>
                     <FormControlLabel
                         value={ListInput.AllCupons}
-                        control={<Radio />}
+                        control={<Radio size="small" />}
                         label="Todos os Cupons"
                     />
                     <FormControlLabel
                         value={ListInput.Participants}
-                        control={<Radio />}
+                        control={<Radio size="small" />}
                         label="Participantes"
                     />
                 </RadioGroup>
@@ -241,6 +307,120 @@ export function Coupons() {
                         }}
                     />
                 </Button>
+
+                <Paper
+                    elevation={3}
+                    sx={{
+                        marginTop: '2vh',
+                    }}
+                >
+                    <Accordion
+                        defaultExpanded={true}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMore />}
+                        >
+                            <Typography>Configurações Sorteio</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+
+                            <Box
+                                component="form"
+                                sx={{
+                                    '& .MuiTextField-root': { mb: 1 },
+                                }}
+                                noValidate
+                                autoComplete="off"
+                            >
+                                <FormLabel>Tempo (s) de sorteio de cada cupom</FormLabel>
+                                <TextField
+                                    className="teste"
+                                    size="small"
+                                    fullWidth
+                                    variant="standard"
+                                    type="number"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    defaultValue={timeRaffle}
+                                    InputProps={
+                                        {
+                                            inputProps: {
+                                                min: 1,
+                                                max: 10
+                                            }
+                                        }}
+                                    onChange={handleTimeRaffleChange}
+                                />
+                                <FormLabel sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap'
+                                }}
+                                >
+                                    Formato Revelação Cupom&nbsp;
+                                    <RaffleNumberExemple
+                                        raffleReveal={raffleRevealNumbers}
+                                        duration={timeRaffle}
+                                    />
+                                </FormLabel>
+                                <RadioGroup
+                                    value={raffleRevealNumbers}
+                                    onChange={handleRaffleRevealNumbers}
+                                >
+                                    <FormControlLabel value={RaffleRevealNumbers.All} control={<Radio size="small" />} label="Todos ao Mesmo Tempo" />
+                                    <FormControlLabel value={RaffleRevealNumbers.RightToLeft} control={<Radio size="small" />} label="Direita para Esquerda" />
+                                    <FormControlLabel value={RaffleRevealNumbers.LeftToRight} control={<Radio size="small" />} label="Esquera para Direita" />
+                                </RadioGroup>
+                                <FormLabel>Quantidade de cupons que um participante deve ter para ganhar</FormLabel>
+                                <TextField
+                                    size="small"
+                                    fullWidth
+                                    variant="standard"
+                                    type="number"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    defaultValue={couponsWinner}
+                                    InputProps={
+                                        {
+                                            inputProps: {
+                                                min: 1,
+                                                max: 10
+                                            }
+                                        }}
+                                    onChange={handleCouponsWinnerChange}
+                                />
+                                <FormLabel sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap'
+                                }}
+                                >
+                                    Formato Exibição Rank&nbsp;
+                                    {renderParticipant(rankDisplay, couponsWinner, Math.ceil(couponsWinner / 2))}
+                                </FormLabel>
+                                <RadioGroup
+                                    value={rankDisplay}
+                                    onChange={handleRankDisplayChange}
+                                >
+                                    <FormControlLabel
+                                        value={RankDisplay.MultipleIcons}
+                                        control={<Radio size="small" />}
+                                        label="Marcação"
+                                    />
+                                    <FormControlLabel
+                                        value={RankDisplay.SingleIcon}
+                                        control={<Radio size="small" />}
+                                        label="Contador"
+                                    />
+                                </RadioGroup>
+                            </Box>
+
+
+                        </AccordionDetails>
+                        <AccordionActions>
+
+                        </AccordionActions>
+                    </Accordion>
+                </Paper>
 
                 <Button
                     component={Link}
