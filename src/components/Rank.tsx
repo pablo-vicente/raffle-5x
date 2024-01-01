@@ -17,6 +17,39 @@ export enum RankDisplay {
     MultipleIcons = 1,
     SingleIcon = 2,
 }
+function generateRank(maxRaffle: number, raffledCoupons: number) {
+
+    const raffledAdj = raffledCoupons > maxRaffle ? maxRaffle : raffledCoupons;
+    const raffled = [...Array(raffledAdj)].map(() => true);
+    const notRaffled = [...Array(maxRaffle - raffledAdj)].map(() => false);
+    const rank = [...raffled, ...notRaffled];
+
+    return rank;
+}
+
+
+export function renderParticipant(display: RankDisplay, maxRaffle: number, coupons: number) {
+    switch (display) {
+
+        case RankDisplay.MultipleIcons:
+            return <>
+                {
+                    generateRank(maxRaffle, coupons).map((e, i) => e
+                        ? <SentimentSatisfiedOutlined key={i} sx={{ color: 'success.main' }} />
+                        : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
+
+                }
+            </>
+
+        case RankDisplay.SingleIcon:
+
+            return coupons > 0
+                ? <Badge badgeContent={coupons} color="secondary">
+                    <SentimentSatisfiedOutlined sx={{ color: 'success.main' }} />
+                </Badge>
+                : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
+    }
+}
 
 export function Rank(
     {
@@ -28,39 +61,6 @@ export function Rank(
         display: RankDisplay,
         maxRaffle: number
     }) {
-
-    function generateRank(raffledCoupons: number) {
-
-        const raffledAdj = raffledCoupons > maxRaffle ? maxRaffle : raffledCoupons;
-        const raffled = [...Array(raffledAdj)].map(() => true);
-        const notRaffled = [...Array(maxRaffle - raffledAdj)].map(() => false);
-        const rank = [...raffled, ...notRaffled];
-
-        return rank;
-    }
-
-    function renderParticipant(coupons: number) {
-        switch (display) {
-
-            case RankDisplay.MultipleIcons:
-                return <>
-                    {
-                        generateRank(coupons).map((e, i) => e
-                            ? <SentimentSatisfiedOutlined key={i} sx={{ color: 'success.main' }} />
-                            : <SentimentVeryDissatisfied key={i} sx={{ color: 'warning.main' }} />)
-
-                    }
-                </>
-
-            case RankDisplay.SingleIcon:
-
-                return coupons > 0
-                    ? <Badge badgeContent={coupons} color="secondary">
-                        <SentimentSatisfiedOutlined sx={{ color: 'success.main' }} />
-                    </Badge>
-                    : <SentimentVeryDissatisfied sx={{ color: 'warning.main' }} />
-        }
-    }
 
     return (
         <List
@@ -80,7 +80,7 @@ export function Rank(
                     >
                         Participantes
                         <ListItemIcon>
-                            {renderParticipant(maxRaffle)}
+                            {renderParticipant(display, maxRaffle, maxRaffle)}
                         </ListItemIcon>
 
                     </Typography>
@@ -97,7 +97,7 @@ export function Rank(
                                 primary={participant.Name}
                             />
                             <ListItemIcon>
-                                {renderParticipant(participant.Coupons.length)}
+                                {renderParticipant(display, maxRaffle, participant.Coupons.length)}
                             </ListItemIcon>
                         </ListItem>
                     )
