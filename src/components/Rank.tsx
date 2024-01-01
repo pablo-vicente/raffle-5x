@@ -11,12 +11,8 @@ import {
     SentimentSatisfiedOutlined,
     SentimentVeryDissatisfied,
 } from '@mui/icons-material';
-import { IRankPartipant } from "../types";
+import { IRankPartipant, RankDisplay } from "../types";
 
-export enum RankDisplay {
-    MultipleIcons = 1,
-    SingleIcon = 2,
-}
 function generateRank(maxRaffle: number, raffledCoupons: number) {
 
     const raffledAdj = raffledCoupons > maxRaffle ? maxRaffle : raffledCoupons;

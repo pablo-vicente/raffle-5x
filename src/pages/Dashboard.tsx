@@ -1,14 +1,14 @@
 import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RaffledCouponsList } from "../components/RaffledCouponsList";
-import { Rank, RankDisplay } from "../components/Rank";
 import { Ticket } from "../components/Ticket";
-import { IRaffledCoupon, IRankPartipant } from "../types";
+import { IRaffledCoupon, IRankPartipant, RaffleRevealNumbers, RankDisplay } from "../types";
 import { ModalWinner } from "../components/Modal";
-import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
 import { RaffleContext } from "../contexts/RaffleContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../App";
+import useRaffleNumber from "../hooks/RaffleNumber";
+import { Rank } from "../components/Rank";
 
 
 const maxRaffle = 2;

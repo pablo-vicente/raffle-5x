@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-
-export enum RaffleRevealNumbers {
-    All = 1,
-    RightToLeft = 2,
-    LeftToRight = 3
-}
+import { RaffleRevealNumbers } from "../types";
 
 export default function useRaffleNumber(
     raffleReveal: RaffleRevealNumbers,

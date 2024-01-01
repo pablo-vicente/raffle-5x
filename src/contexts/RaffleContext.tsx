@@ -1,13 +1,8 @@
 import React, { createContext, useCallback, useState } from 'react'
-import { ICoupon, IRaffleInput } from '../types'
+import { ICoupon, IRaffleInput, ListInput } from '../types'
 
 type RaffleContextProps = {
     children: React.ReactNode
-}
-
-export enum ListInput {
-    AllCupons = 1,
-    Participants = 2
 }
 
 type IRaffleContext = {
