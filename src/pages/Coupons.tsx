@@ -2,11 +2,12 @@ import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, B
 import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn, CloudUpload, ExpandMore, LiveHelp } from "@mui/icons-material";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { ListInput, RaffleContext } from "../contexts/RaffleContext";
 import { Link } from "react-router-dom";
 import { Page } from "../App";
-import useRaffleNumber, { RaffleRevealNumbers } from "../hooks/RaffleNumber";
-import { RankDisplay, renderParticipant } from "../components/Rank";
+import { ListInput, RaffleRevealNumbers, RankDisplay } from "../types";
+import useRaffleNumber from "../hooks/RaffleNumber";
+import { RaffleContext } from "../contexts/RaffleContext";
+import { renderParticipant } from "../components/Rank";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -75,15 +76,16 @@ function RaffleNumberExemple({
 }
 
 export function Coupons() {
-    const { raffleInput, readRaffleInputFromText, originalInput } = useContext(RaffleContext);
+    const {
+        raffleInput,
+        readRaffleInputFromText,
+        originalInput,
+        raffleSettings,
+        updateRaffleSettings
+    } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
     const [typeInputList, setTypeInputList] = useState<ListInput>(ListInput.AllCupons);
 
-    // TODO CONTEXT
-    const [timeRaffle, setTimeRaffle] = useState<number>(5);
-    const [raffleRevealNumbers, setRaffleRevealNumbers] = useState<RaffleRevealNumbers>(RaffleRevealNumbers.RightToLeft);
-    const [couponsWinner, setCuponsWinner] = useState<number>(5);
-    const [rankDisplay, setRankDisplay] = useState<RankDisplay>(RankDisplay.MultipleIcons);
     const dysplayResults = () => {
 
         if (couponsErrors.length === 0 && raffleInput.Max === 0)
@@ -187,21 +189,31 @@ export function Coupons() {
     }
 
     const handleRaffleRevealNumbers = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-        const selectedOption = Number((event.target as HTMLInputElement).value);
-        setRaffleRevealNumbers(selectedOption);
+        updateRaffleSettings({
+            ...raffleSettings,
+            RaffleReveal: Number((event.target as HTMLInputElement).value)
+        })
     };
 
     const handleTimeRaffleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTimeRaffle(Number((event.target as HTMLInputElement).value));
+        updateRaffleSettings({
+            ...raffleSettings,
+            DurationSencods: Number((event.target as HTMLInputElement).value)
+        })
     };
 
     const handleCouponsWinnerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCuponsWinner(Number((event.target as HTMLInputElement).value));
+        updateRaffleSettings({
+            ...raffleSettings,
+            MaxCouponsRaffle: Number((event.target as HTMLInputElement).value)
+        })
     };
 
     const handleRankDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRankDisplay(Number((event.target as HTMLInputElement).value));
+        updateRaffleSettings({
+            ...raffleSettings,
+            RankDisplay: Number((event.target as HTMLInputElement).value)
+        })
     };
     return (
         <Box>
@@ -341,7 +353,7 @@ export function Coupons() {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    defaultValue={timeRaffle}
+                                    defaultValue={raffleSettings.DurationSencods}
                                     InputProps={
                                         {
                                             inputProps: {
@@ -358,12 +370,12 @@ export function Coupons() {
                                 >
                                     Formato Revelação Cupom&nbsp;
                                     <RaffleNumberExemple
-                                        raffleReveal={raffleRevealNumbers}
-                                        duration={timeRaffle}
+                                        raffleReveal={raffleSettings.RaffleReveal}
+                                        duration={raffleSettings.DurationSencods}
                                     />
                                 </FormLabel>
                                 <RadioGroup
-                                    value={raffleRevealNumbers}
+                                    value={raffleSettings.RaffleReveal}
                                     onChange={handleRaffleRevealNumbers}
                                 >
                                     <FormControlLabel value={RaffleRevealNumbers.All} control={<Radio size="small" />} label="Todos ao Mesmo Tempo" />
@@ -379,7 +391,7 @@ export function Coupons() {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    defaultValue={couponsWinner}
+                                    defaultValue={raffleSettings.MaxCouponsRaffle}
                                     InputProps={
                                         {
                                             inputProps: {
@@ -395,10 +407,10 @@ export function Coupons() {
                                 }}
                                 >
                                     Formato Exibição Rank&nbsp;
-                                    {renderParticipant(rankDisplay, couponsWinner, Math.ceil(couponsWinner / 2))}
+                                    {renderParticipant(raffleSettings.RankDisplay, raffleSettings.MaxCouponsRaffle, Math.ceil(raffleSettings.MaxCouponsRaffle / 2))}
                                 </FormLabel>
                                 <RadioGroup
-                                    value={rankDisplay}
+                                    value={raffleSettings.RankDisplay}
                                     onChange={handleRankDisplayChange}
                                 >
                                     <FormControlLabel
