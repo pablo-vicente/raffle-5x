@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RaffledCouponsList } from "../components/RaffledCouponsList";
 import { Ticket } from "../components/Ticket";
-import { IRaffledCoupon, IRankPartipant, RaffleRevealNumbers, RankDisplay } from "../types";
+import { IRaffledCoupon, IRankPartipant, RankDisplay } from "../types";
 import { ModalWinner } from "../components/Modal";
 import { RaffleContext } from "../contexts/RaffleContext";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +10,6 @@ import { Page } from "../App";
 import useRaffleNumber from "../hooks/RaffleNumber";
 import { Rank } from "../components/Rank";
 
-
-const maxRaffle = 2;
 
 type IRaffle = {
     coupons: { [key: number]: IRaffledCoupon },
@@ -25,8 +23,12 @@ type IRaffle = {
 
 export function Dashboard() {
     const navigate = useNavigate();
-    const { raffleInput } = useContext(RaffleContext);
-    const { numberRaffled, inRaffle, start } = useRaffleNumber(RaffleRevealNumbers.LeftToRight, raffleInput.Min, raffleInput.Max);
+    const { raffleInput, raffleSettings } = useContext(RaffleContext);
+    const { numberRaffled, inRaffle, start } = useRaffleNumber(
+        raffleSettings.RaffleReveal,
+        raffleInput.Min,
+        raffleInput.Max,
+        raffleSettings.DurationSencods);
     const [raffle, setRaffle] = useState<IRaffle>({
         coupons: {},
         participants: {},
@@ -100,7 +102,7 @@ export function Dashboard() {
             participantCopy.Coupons.push(raffledCoupon);
             participantsCopy[raffledCoupon.Name] = participantCopy;
 
-            if (participantCopy.Coupons.length >= maxRaffle)
+            if (participantCopy.Coupons.length >= raffleSettings.MaxCouponsRaffle)
                 raffleCopy.winner = raffledCoupon.Name
 
             if (raffleCopy.raffleToWinner.first)
@@ -109,7 +111,7 @@ export function Dashboard() {
             return raffleCopy;
         });
 
-    }, [coupon, inRaffle, numberRaffled])
+    }, [coupon, inRaffle, numberRaffled, raffleSettings.MaxCouponsRaffle])
 
 
     useEffect(() => {
@@ -220,8 +222,8 @@ export function Dashboard() {
                         }}>
                         <Rank
                             participants={Object.values(raffle.participants)}
-                            display={RankDisplay.MultipleIcons}
-                            maxRaffle={maxRaffle}
+                            display={raffleSettings.RankDisplay}
+                            maxRaffle={raffleSettings.MaxCouponsRaffle}
                         />
                     </Paper>
 
@@ -306,7 +308,7 @@ export function Dashboard() {
                         <Rank
                             participants={Object.values(raffle.participants)}
                             display={RankDisplay.MultipleIcons}
-                            maxRaffle={maxRaffle}
+                            maxRaffle={raffleSettings.MaxCouponsRaffle}
                         />
                     </Paper>
 
