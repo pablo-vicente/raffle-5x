@@ -1,20 +1,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { RaffleRevealNumbers } from "../types";
 
+type IUseRaffleNumberControll = {
+    number: number,
+    startTime: Date
+}
+
 export default function useRaffleNumber(
     raffleReveal: RaffleRevealNumbers,
     min: number,
     max: number,
-    durationSencods: number = 5,
+    durationSencods: number,
     maxDurationFrameUpdate: number = 200
 ) {
 
     const duration = durationSencods * 1000;
-    const [number, setNumber] = useState<number>(0);
-    const [startTime, setStartTime] = useState<Date>(new Date(0));
+    const [controll, setControll] = useState<IUseRaffleNumberControll>({
+        number: 0,
+        startTime: new Date(0)
+    });
 
     const maxCaracters = max.toString().length;
-    const inRaffle = startTime.getTime() !== new Date(0).getTime();
+    const inRaffle = controll.startTime.getTime() !== new Date(0).getTime();
 
     useEffect(() => {
 
@@ -22,13 +29,15 @@ export default function useRaffleNumber(
             return;
 
         const timeForElement = duration / maxCaracters;
-        const timeRaffled = (new Date().getTime() - startTime.getTime());
+        const timeRaffled = (new Date().getTime() - controll.startTime.getTime());
         const numbersRaffled = Math.floor(timeRaffled / timeForElement);
         const intervalDuration = maxDurationFrameUpdate * numbersRaffled / maxCaracters;
 
         if (timeRaffled >= duration) {
-            setStartTime(new Date(0));
-            return;
+            setControll((previous) => ({
+                ...previous,
+                startTime: new Date(0)
+            }));
         }
 
         const intervalId = setInterval(() => {
@@ -41,7 +50,7 @@ export default function useRaffleNumber(
                     .toString()
                     .padStart(maxCaracters, "0")
                     .split("");
-                let tempCoupon = number
+                let tempCoupon = controll.number
                     .toString()
                     .padStart(maxCaracters, "0")
                     .split("");
@@ -75,25 +84,28 @@ export default function useRaffleNumber(
                 }
 
             }
-            setNumber(randomNumber);
+            setControll({
+                ...controll,
+                number: randomNumber
+            });
 
         }, intervalDuration);
 
-
-
         return () => clearInterval(intervalId);
-    }, [raffleReveal, min, max, duration, maxDurationFrameUpdate, maxCaracters, startTime, number, inRaffle]);
+    }, [controll, duration, inRaffle, max, maxCaracters, maxDurationFrameUpdate, min, raffleReveal]);
 
     function randomFromInterval(min: number, max: number) {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
     const start = useCallback(() => {
-        setStartTime(new Date());
-        setNumber(0);
+        setControll({
+            number: 0,
+            startTime: new Date()
+        })
     }, []);
     return {
-        numberRaffled: `${number}`.toString().padStart(maxCaracters, "0"),
+        numberRaffled: `${controll.number}`.toString().padStart(maxCaracters, "0"),
         inRaffle: inRaffle,
         start: start
     };
