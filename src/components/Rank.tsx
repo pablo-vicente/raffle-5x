@@ -88,10 +88,10 @@ export function Rank(
                 participants
                     .sort((a, b) => {
 
-                        if (a.Coupons.length === b.Coupons.length)
+                        if (a.Coupons === b.Coupons)
                             return (a.Name > b.Name) ? 1 : -1
 
-                        return (a.Coupons.length > b.Coupons.length) ? -1 : 1
+                        return (a.Coupons > b.Coupons) ? -1 : 1
                     })
                     .map(participant =>
                         <ListItem key={participant.Name}>
@@ -99,7 +99,7 @@ export function Rank(
                                 primary={participant.Name}
                             />
                             <ListItemIcon>
-                                {renderParticipant(display, maxRaffle, participant.Coupons.length)}
+                                {renderParticipant(display, maxRaffle, participant.Coupons)}
                             </ListItemIcon>
                         </ListItem>
                     )

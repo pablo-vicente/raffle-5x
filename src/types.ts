@@ -6,7 +6,7 @@ export type IRaffledCoupon = {
 
 export type IRankPartipant = {
     Name: string,
-    Coupons: IRaffledCoupon[],
+    Coupons: number,
 };
 
 export type ICoupon = {
