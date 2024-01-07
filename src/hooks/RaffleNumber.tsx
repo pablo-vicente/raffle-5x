@@ -78,7 +78,7 @@ export default function useRaffleNumber(
                 if (randomNumber > max) {
 
                     const minRandonNumber = leftpart
-                        .join()
+                        .join("")
                         .padEnd(maxCaracters, "0");
                     randomNumber = randomFromInterval(Number(minRandonNumber), max);
                 }
