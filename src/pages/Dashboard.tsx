@@ -83,26 +83,16 @@ export function Dashboard() {
                 Time: new Date()
             };
 
-            const raffledCouponsCopy = { ...raffle.coupons }
-            const participantsCopy = { ...raffle.participants };
             const raffleCopy: IRaffle = {
                 ...raffle,
-                raffleToWinner: { ...raffle.raffleToWinner },
-                coupons: raffledCouponsCopy,
-                participants: participantsCopy
             };
 
-            raffledCouponsCopy[coupon.Code] = raffledCoupon
+            raffleCopy.coupons[coupon.Code] = raffledCoupon
 
-            const participantAtual = participantsCopy[raffledCoupon.Name];
-            const participantCopy: IRankPartipant = {
-                ...participantAtual,
-                Coupons: [...participantAtual.Coupons]
-            };
-            participantCopy.Coupons.push(raffledCoupon);
-            participantsCopy[raffledCoupon.Name] = participantCopy;
+            const participantAtual = raffleCopy.participants[raffledCoupon.Name];
+            participantAtual.Coupons.push(raffledCoupon);
 
-            if (participantCopy.Coupons.length >= raffleSettings.MaxCouponsRaffle)
+            if (participantAtual.Coupons.length >= raffleSettings.MaxCouponsRaffle)
                 raffleCopy.winner = raffledCoupon.Name
 
             if (raffleCopy.raffleToWinner.first)
