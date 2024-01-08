@@ -42,14 +42,10 @@ export default function useRaffleNumber(
 
         const intervalId = setInterval(() => {
 
-            let randomNumber = randomFromInterval(min, max);
+            let randomNumber;
 
             if (raffleReveal !== RaffleRevealNumbers.All) {
 
-                let tempRandomNumber = randomNumber
-                    .toString()
-                    .padStart(maxCaracters, "0")
-                    .split("");
                 let tempCoupon = controll.number
                     .toString()
                     .padStart(maxCaracters, "0")
@@ -62,27 +58,39 @@ export default function useRaffleNumber(
 
                     case RaffleRevealNumbers.RightToLeft:
                         let numbers = (maxCaracters - numbersRaffled);
-                        leftpart = tempRandomNumber.slice(0, numbers);
                         rightPart = tempCoupon.slice(numbers);
+
+                        const maxRandonNumber = max - Number(rightPart);
+
+                        leftpart = randomFromInterval(min, maxRandonNumber)
+                            .toString()
+                            .padStart(maxCaracters, "0")
+                            .split("")
+                            .slice(0, numbers);
+
                         break;
 
                     case RaffleRevealNumbers.LeftToRight:
                         leftpart = tempCoupon.slice(0, numbersRaffled);
-                        rightPart = tempRandomNumber.slice(numbersRaffled);
+
+                        const minLeft = leftpart
+                            .join("")
+                            .padEnd(maxCaracters, "0");
+
+                        rightPart = randomFromInterval(Number(minLeft), max)
+                            .toString()
+                            .padStart(maxCaracters, "0")
+                            .split("")
+                            .slice(numbersRaffled);
+
                         break;
                 }
 
-                let finalNumber = [...leftpart, ...rightPart].join("")
+                const finalNumber = [...leftpart, ...rightPart].join("")
                 randomNumber = Number(finalNumber);
 
-                if (randomNumber > max) {
-
-                    const minRandonNumber = leftpart
-                        .join("")
-                        .padEnd(maxCaracters, "0");
-                    randomNumber = randomFromInterval(Number(minRandonNumber), max);
-                }
-
+            } else {
+                randomNumber = randomFromInterval(min, max);
             }
             setControll({
                 ...controll,
