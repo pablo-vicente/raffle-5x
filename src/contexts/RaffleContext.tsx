@@ -12,9 +12,14 @@ type RaffleContextProps = {
     children: React.ReactNode
 }
 
+type InputListText = {
+    text: string,
+    type: ListInput
+}
+
 type IRaffleContext = {
     raffleInput: IRaffleInput,
-    originalInput: string,
+    inputListText: InputListText,
     readRaffleInputFromText: (couponsListRaw: string, listType: ListInput) => string[],
     raffleSettings: IRaffleSettings,
     updateRaffleSettings: (settings: IRaffleSettings) => void
@@ -24,7 +29,10 @@ type IRaffleContext = {
 export const RaffleContext = createContext<IRaffleContext>({} as IRaffleContext)
 
 export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
-    const [originalInput, setOriginalInput] = useState<string>("");
+    const [inputListText, setInputListText] = useState<InputListText>({
+        text: "",
+        type: ListInput.AllCupons
+    });
     const [raffleInput, setRaffleInput] = useState<IRaffleInput>({
         Max: 0,
         Min: 0,
@@ -40,7 +48,10 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 
     const setNewRaffleInput = useCallback((couponsListRaw: string, listType: ListInput): string[] => {
 
-        setOriginalInput(couponsListRaw);
+        setInputListText({
+            text: couponsListRaw,
+            type: listType
+        });
 
         let result;
         switch (listType) {
@@ -77,8 +88,8 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 
     return <RaffleContext.Provider value={{
         raffleInput: raffleInput,
+        inputListText: inputListText,
         readRaffleInputFromText: setNewRaffleInput,
-        originalInput: originalInput,
         raffleSettings: raffleSettings,
         updateRaffleSettings: setNewRaffleSettings
     } as IRaffleContext}>

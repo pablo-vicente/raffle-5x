@@ -79,12 +79,11 @@ export function Coupons() {
     const {
         raffleInput,
         readRaffleInputFromText,
-        originalInput,
+        inputListText,
         raffleSettings,
         updateRaffleSettings
     } = useContext(RaffleContext);
     const [couponsErrors, setCouponsErrors] = useState<string[]>([]);
-    const [typeInputList, setTypeInputList] = useState<ListInput>(ListInput.AllCupons);
 
     const dysplayResults = () => {
 
@@ -179,8 +178,7 @@ export function Coupons() {
 
     const handleInputListChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const listType = Number((event.target as HTMLInputElement).value);
-        setTypeInputList(listType);
-        handleTextAreaInput(originalInput, listType);
+        handleTextAreaInput(inputListText.text, listType);
     };
 
     const handleTextAreaInput = (textAreaValue: string, listType: ListInput) => {
@@ -238,7 +236,7 @@ export function Coupons() {
             >
                 <RadioGroup
                     row
-                    value={typeInputList}
+                    value={inputListText.type}
                     onChange={handleInputListChange}>
                     <FormControlLabel
                         value={ListInput.AllCupons}
@@ -275,11 +273,11 @@ export function Coupons() {
             >
 
                 <Textarea
-                    placeholder={typeInputList === ListInput.AllCupons
+                    placeholder={inputListText.type === ListInput.AllCupons
                         ? placeholderAllCupons
                         : placeholderParticipants}
-                    value={originalInput}
-                    onChange={(e) => handleTextAreaInput(e.target.value, typeInputList)}
+                    value={inputListText.text}
+                    onChange={(e) => handleTextAreaInput(e.target.value, inputListText.type)}
                 />
 
                 {dysplayResults()}
@@ -311,7 +309,7 @@ export function Coupons() {
                             if (file) {
                                 try {
                                     const content = await readFile(file);
-                                    handleTextAreaInput(content, typeInputList);
+                                    handleTextAreaInput(content, inputListText.type);
                                 } catch (error) {
                                     console.error('Error reading file:', error);
                                 }
