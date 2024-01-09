@@ -60,7 +60,7 @@ export default function useRaffleNumber(
                         let numbers = (maxCaracters - numbersRaffled);
                         rightPart = tempCoupon.slice(numbers);
 
-                        const maxRandonNumber = max - Number(rightPart);
+                        const maxRandonNumber = max - Number(rightPart.join(""));
 
                         leftpart = randomFromInterval(min, maxRandonNumber)
                             .toString()
@@ -86,7 +86,7 @@ export default function useRaffleNumber(
                         break;
                 }
 
-                const finalNumber = [...leftpart, ...rightPart].join("")
+                const finalNumber = [...leftpart, ...rightPart].join("");
                 randomNumber = Number(finalNumber);
 
             } else {
