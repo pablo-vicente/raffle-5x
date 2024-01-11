@@ -1,4 +1,4 @@
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControlLabel, FormLabel, List, ListItem, ListItemIcon, ListSubheader, Paper, Radio, RadioGroup, TextField, Tooltip, Typography, styled } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControlLabel, FormLabel, IconButton, List, ListItem, ListItemIcon, ListSubheader, Paper, Radio, RadioGroup, TextField, Tooltip, Typography, styled } from "@mui/material";
 import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn, CloudUpload, ExpandMore, LiveHelp } from "@mui/icons-material";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
@@ -260,7 +260,9 @@ export function Coupons() {
                     </>
 
                 }>
-                    <LiveHelp sx={{ color: 'warning.main' }} />
+                    <IconButton>
+                        <LiveHelp color='warning' />
+                    </IconButton>
                 </Tooltip>
             </Box>
 
