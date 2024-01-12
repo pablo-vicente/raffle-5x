@@ -18,10 +18,9 @@ export function Ticket({
 }) {
 
     const colorGoldenrod = "goldenrod";
-    const borderTicketColor = golden ? colorGoldenrod : "black";
     const backGroundTickerColor = golden ? colorGoldenrod : "white";
 
-    const border = `5px solid ${borderTicketColor}`;
+    const border = `5px solid black`;
     const widthAndHeight = '40px';
     const position = '-5px';
     const TicketTop = styled('div')(({ theme }) => ({
