@@ -5,15 +5,19 @@ import {
     ListItemIcon,
     ListItemText,
     Typography,
+    Chip,
+    Box,
 } from '@mui/material';
 import { IRaffledCoupon } from '../types';
 
 export function RaffledCouponsList(
     {
         coupons,
+        allowRepeatCoupon
     }:
         {
             coupons: IRaffledCoupon[],
+            allowRepeatCoupon: boolean
         }) {
     return (
         <List
@@ -33,20 +37,51 @@ export function RaffledCouponsList(
                     .map((coupon, index) =>
 
                         <ListItem
+                            sx={
+                                !allowRepeatCoupon && coupon.Repeated
+                                    ? { textDecoration: 'line-through' }
+                                    : {}
+                            }
                             key={index}
-                            secondaryAction={coupon.Time.toLocaleTimeString("pt-BR")}
+                            secondaryAction={
+                                <Chip
+                                    label={coupon.Time.toLocaleTimeString("pt-BR")}
+                                    variant="outlined"
+                                />
+                            }
                         >
                             <ListItemIcon>
-                                {coupon.Code}
+                                <Chip
+                                    label={coupon.Code}
+                                    variant="outlined"
+                                />
                             </ListItemIcon>
+                            &nbsp;
                             <ListItemText
-                                primary={coupon.Name}
+                                primary={
+                                    <Box>
+                                        {coupon.Name}
+                                        {
+                                            !allowRepeatCoupon && coupon.Repeated
+                                                ? <>
+                                                    &nbsp;
+                                                    <Chip
+                                                        color='warning'
+                                                        label={"Repetido"}
+                                                        variant="outlined"
+                                                    />
+                                                </>
+                                                : <></>
+                                        }
+                                    </Box>
+                                }
+
                             />
                         </ListItem>
                     )
 
             }
-        </List>
+        </List >
     );
 }
 

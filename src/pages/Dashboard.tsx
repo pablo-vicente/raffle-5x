@@ -10,8 +10,6 @@ import { Page } from "../App";
 import useRaffleNumber from "../hooks/RaffleNumber";
 import { Rank } from "../components/Rank";
 
-const allowRepeatCoupon = false;
-
 type IRaffle = {
     coupons: { [key: number]: IRaffledCoupon[] },
     participants: { [key: string]: IRankPartipant },
@@ -71,21 +69,24 @@ export function Dashboard() {
         if (!coupon)
             return;
 
-        const raffledCoupon = {
+
+        const repeatedCoupon = !!raffle.coupons[coupon.Code] && raffle.coupons[coupon.Code].length >= 1;
+        const raffledCoupon: IRaffledCoupon = {
             Code: numberRaffled,
             Name: coupon.Name,
-            Time: new Date()
+            Time: new Date(),
+            Repeated: repeatedCoupon
         };
 
-        if (raffle.coupons[coupon.Code])
+        if (repeatedCoupon)
             raffle.coupons[coupon.Code].push(raffledCoupon)
         else
             raffle.coupons[coupon.Code] = [raffledCoupon]
 
         const participantAtual = raffle.participants[raffledCoupon.Name];
 
-        const repeatCoupon = raffle.coupons[coupon.Code].length > 1;
-        if (allowRepeatCoupon || (!allowRepeatCoupon && !repeatCoupon))
+
+        if (raffleSettings.AllowRepeatCoupon || (!raffleSettings.AllowRepeatCoupon && !repeatedCoupon))
             participantAtual.Coupons++;
 
         setRaffleToWinner((r) => {
@@ -103,7 +104,7 @@ export function Dashboard() {
             return copy;
         });
 
-    }, [coupon, inRaffle, numberRaffled, raffle.coupons, raffle.participants, raffleSettings.MaxCouponsRaffle])
+    }, [coupon, inRaffle, numberRaffled, raffle, raffleSettings])
 
 
     useEffect(() => {
@@ -231,7 +232,10 @@ export function Dashboard() {
                             overflowY: 'auto',
                             width: '100%'
                         }}>
-                        <RaffledCouponsList coupons={Object.values(raffle.coupons).flatMap(x => x)} />
+                        <RaffledCouponsList
+                            coupons={Object.values(raffle.coupons).flatMap(x => x)}
+                            allowRepeatCoupon={raffleSettings.AllowRepeatCoupon}
+                        />
                     </Paper>
                 </Box>
 
@@ -315,7 +319,10 @@ export function Dashboard() {
                             height: '45vh',
                             overflowY: 'auto',
                         }}>
-                        <RaffledCouponsList coupons={Object.values(raffle.coupons).flatMap(x => x)} />
+                        <RaffledCouponsList
+                            coupons={Object.values(raffle.coupons).flatMap(x => x)}
+                            allowRepeatCoupon={raffleSettings.AllowRepeatCoupon}
+                        />
                     </Paper>
 
                 </Box >

@@ -1,7 +1,8 @@
 export type IRaffledCoupon = {
     Code: string,
     Name: string,
-    Time: Date
+    Time: Date,
+    Repeated : boolean
 };
 
 export type IRankPartipant = {
@@ -24,8 +25,9 @@ export type IRaffleInput = {
 export type IRaffleSettings = {
     RaffleReveal: RaffleRevealNumbers,
     DurationSencods: number,
-    RankDisplay: RankDisplay
-    MaxCouponsRaffle: number
+    RankDisplay: RankDisplay,
+    MaxCouponsRaffle: number,
+    AllowRepeatCoupon : boolean
 }
 
 // EMUNS

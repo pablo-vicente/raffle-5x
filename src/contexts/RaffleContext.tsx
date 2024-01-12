@@ -43,7 +43,8 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
         DurationSencods: 5,
         MaxCouponsRaffle: 5,
         RaffleReveal: RaffleRevealNumbers.RightToLeft,
-        RankDisplay: RankDisplay.MultipleIcons
+        RankDisplay: RankDisplay.MultipleIcons,
+        AllowRepeatCoupon: true
     });
 
     const setNewRaffleInput = useCallback((couponsListRaw: string, listType: ListInput): string[] => {
