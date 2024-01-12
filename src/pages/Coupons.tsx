@@ -1,4 +1,26 @@
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, FormControlLabel, FormLabel, IconButton, List, ListItem, ListItemIcon, ListSubheader, Paper, Radio, RadioGroup, TextField, Tooltip, Typography, styled } from "@mui/material";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    FormControlLabel,
+    FormGroup,
+    FormLabel,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListSubheader,
+    Paper,
+    Radio,
+    RadioGroup,
+    Switch,
+    TextField,
+    Tooltip,
+    Typography,
+    styled
+} from "@mui/material";
 import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn, CloudUpload, ExpandMore, LiveHelp } from "@mui/icons-material";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
@@ -213,6 +235,14 @@ export function Coupons() {
             RankDisplay: Number((event.target as HTMLInputElement).value)
         })
     };
+
+    const handleAllowRepeatCoupons = (event: React.ChangeEvent<HTMLInputElement>) => {
+        updateRaffleSettings({
+            ...raffleSettings,
+            AllowRepeatCoupon: event.target.checked
+        })
+    };
+
     return (
         <Box>
             <Typography
@@ -424,13 +454,45 @@ export function Coupons() {
                                         label="Contador"
                                     />
                                 </RadioGroup>
+
+                                <FormGroup
+                                >
+                                    <FormControlLabel
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'flex-end',
+                                            marginLeft: 0
+                                        }}
+                                        control={
+                                            <Switch name="gilad"
+                                                checked={raffleSettings.AllowRepeatCoupon}
+                                                onChange={handleAllowRepeatCoupons}
+                                            />
+                                        }
+                                        label={
+
+                                            <>
+                                                <FormLabel>Repetição de Cupons</FormLabel>
+                                                <Tooltip
+                                                    title={
+                                                        <>
+                                                            <Typography color="inherit">
+                                                                Permite a contablização de cupons repetidos no sorteio.
+                                                            </Typography>
+                                                        </>
+
+                                                    }>
+                                                    <IconButton>
+                                                        <LiveHelp color='warning' />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </>
+                                        }
+                                        labelPlacement="start"
+                                    />
+                                </FormGroup>
                             </Box>
-
-
                         </AccordionDetails>
-                        <AccordionActions>
-
-                        </AccordionActions>
                     </Accordion>
                 </Paper>
 
