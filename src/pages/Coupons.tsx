@@ -478,6 +478,8 @@ export function Coupons() {
                                                         <>
                                                             <Typography color="inherit">
                                                                 Permite a contablização de cupons repetidos no sorteio.
+                                                                <br />
+                                                                Todos os participantes devem no mínimo <b>{raffleSettings.MaxCouponsRaffle}</b> cupons.
                                                             </Typography>
                                                         </>
 
