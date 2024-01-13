@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { Textarea } from "../components/TextArea";
 import { AssignmentTurnedIn, CloudUpload, ExpandMore, LiveHelp } from "@mui/icons-material";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Page } from "../App";
 import { ListInput, RaffleRevealNumbers, RankDisplay } from "../types";
@@ -140,7 +140,7 @@ export function Coupons() {
                         </ListItemIcon>
                     </ListItem>
                 ),
-                "Linhas com Atenção.");
+                "Atenção.");
 
 
         return base(
@@ -200,13 +200,25 @@ export function Coupons() {
 
     const handleInputListChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const listType = Number((event.target as HTMLInputElement).value);
-        handleTextAreaInput(inputListText.text, listType);
+        handleTextAreaInput
+            (
+                inputListText.text,
+                listType,
+                raffleSettings.AllowRepeatCoupon,
+                raffleSettings.MaxCouponsRaffle
+            );
     };
 
-    const handleTextAreaInput = (textAreaValue: string, listType: ListInput) => {
-        const errors = readRaffleInputFromText(textAreaValue, listType);
+    const handleTextAreaInput = useCallback((textAreaValue: string, listType: ListInput, allowRepeatCoupon: boolean, maxCouponsRaffle: number) => {
+        const errors = readRaffleInputFromText
+            (
+                textAreaValue,
+                listType,
+                allowRepeatCoupon,
+                maxCouponsRaffle
+            );
         setCouponsErrors(errors);
-    }
+    }, [readRaffleInputFromText])
 
     const handleRaffleRevealNumbers = (event: React.ChangeEvent<HTMLInputElement>) => {
         updateRaffleSettings({
@@ -242,6 +254,33 @@ export function Coupons() {
             AllowRepeatCoupon: event.target.checked
         })
     };
+
+    useEffect(() => {
+
+        handleTextAreaInput
+            (
+                inputListText.text,
+                inputListText.type,
+                raffleSettings.AllowRepeatCoupon,
+                raffleSettings.MaxCouponsRaffle
+            )
+
+    }, [
+        handleTextAreaInput,
+        inputListText.text,
+        inputListText.type,
+        raffleSettings.AllowRepeatCoupon,
+        raffleSettings.MaxCouponsRaffle
+    ])
+
+    useEffect(() => {
+
+        if (couponsErrors.length !== 0)
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+    }, [couponsErrors.length])
 
     return (
         <Box>
@@ -309,7 +348,16 @@ export function Coupons() {
                         ? placeholderAllCupons
                         : placeholderParticipants}
                     value={inputListText.text}
-                    onChange={(e) => handleTextAreaInput(e.target.value, inputListText.type)}
+                    onChange=
+                    {
+                        (e) => handleTextAreaInput
+                            (
+                                e.target.value,
+                                inputListText.type,
+                                raffleSettings.AllowRepeatCoupon,
+                                raffleSettings.MaxCouponsRaffle
+                            )
+                    }
                 />
 
                 {dysplayResults()}
@@ -341,7 +389,13 @@ export function Coupons() {
                             if (file) {
                                 try {
                                     const content = await readFile(file);
-                                    handleTextAreaInput(content, inputListText.type);
+                                    handleTextAreaInput
+                                        (
+                                            content,
+                                            inputListText.type,
+                                            raffleSettings.AllowRepeatCoupon,
+                                            raffleSettings.MaxCouponsRaffle
+                                        );
                                 } catch (error) {
                                     console.error('Error reading file:', error);
                                 }

@@ -20,7 +20,7 @@ type InputListText = {
 type IRaffleContext = {
     raffleInput: IRaffleInput,
     inputListText: InputListText,
-    readRaffleInputFromText: (couponsListRaw: string, listType: ListInput) => string[],
+    readRaffleInputFromText: (couponsListRaw: string, listType: ListInput, allowRepeatCoupon: boolean, maxCouponsRaffle: number) => string[],
     raffleSettings: IRaffleSettings,
     updateRaffleSettings: (settings: IRaffleSettings) => void
 }
@@ -47,39 +47,71 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
         AllowRepeatCoupon: true
     });
 
-    const setNewRaffleInput = useCallback((couponsListRaw: string, listType: ListInput): string[] => {
+    const setNewRaffleInput = useCallback(
+        (
+            couponsListRaw: string,
+            listType: ListInput,
+            allowRepeatCoupon: boolean,
+            maxCouponsRaffle: number
+        ): string[] => {
 
-        setInputListText({
-            text: couponsListRaw,
-            type: listType
-        });
+            setInputListText({
+                text: couponsListRaw,
+                type: listType
+            });
 
-        let result;
-        switch (listType) {
-            case ListInput.AllCupons:
-                result = readCouponsFromText(couponsListRaw);
-                break;
-            case ListInput.Participants:
-                result = generateCouponsFromText(couponsListRaw);
-                break
-        }
+            let result;
+            switch (listType) {
+                case ListInput.AllCupons:
+                    result = readCouponsFromText(couponsListRaw);
+                    break;
+                case ListInput.Participants:
+                    result = generateCouponsFromText(couponsListRaw);
+                    break
+            }
 
-        if (Array.isArray(result)) {
 
-            setRaffleInput({
+            let newRaffleInput: IRaffleInput = {
                 Max: 0,
                 Min: 0,
                 Coupons: {},
                 Participants: {}
-            });
+            }
 
-            return result;
-        }
+            if (Array.isArray(result)) {
+                setRaffleInput(newRaffleInput);
+                return result;
+            }
 
-        setRaffleInput(result);
+            if (!allowRepeatCoupon) {
+                const qnt = maxCouponsRaffle;
+                const errors: string[] = [];
 
-        return [];
-    }, [])
+                for (const participantName in result.Participants) {
+                    const participantCoupons = result.Participants[participantName];
+
+                    if (participantCoupons < qnt) {
+                        const message = `Participante ${participantName} possui apenas ${participantCoupons} cupons.`;
+
+                        errors.push(message)
+                    }
+                }
+
+                if (errors.length !== 0) {
+
+                    const titulo = `Opção de Repetição de Cupons desabilitada.`;
+                    const titulo2 = `Os seguintes participantes não possuem o mínimo de ${qnt} cupons.`;
+
+                    setRaffleInput(newRaffleInput);
+                    return [titulo, titulo2, ...errors];
+                }
+
+            }
+
+            setRaffleInput(result);
+
+            return [];
+        }, [])
 
     const setNewRaffleSettings = useCallback((settings: IRaffleSettings): void => {
         setRaffleSettings({
