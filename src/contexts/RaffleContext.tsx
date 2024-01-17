@@ -108,7 +108,13 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
 
             }
 
+            const durationRecomended = result.Max.toFixed().length;
+
             setRaffleInput(result);
+            setRaffleSettings(x => ({
+                ...x,
+                DurationSencods: durationRecomended
+            }))
 
             return [];
         }, [])

@@ -427,45 +427,7 @@ export function Coupons() {
                                 noValidate
                                 autoComplete="off"
                             >
-                                <FormLabel>Tempo (s) de sorteio de cada cupom</FormLabel>
-                                <TextField
-                                    className="teste"
-                                    size="small"
-                                    fullWidth
-                                    variant="standard"
-                                    type="number"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    defaultValue={raffleSettings.DurationSencods}
-                                    InputProps={
-                                        {
-                                            inputProps: {
-                                                min: 1,
-                                                max: 10
-                                            }
-                                        }}
-                                    onChange={handleTimeRaffleChange}
-                                />
-                                <FormLabel sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap'
-                                }}
-                                >
-                                    Formato Revelação Cupom&nbsp;
-                                    <RaffleNumberExemple
-                                        raffleReveal={raffleSettings.RaffleReveal}
-                                        duration={raffleSettings.DurationSencods}
-                                    />
-                                </FormLabel>
-                                <RadioGroup
-                                    value={raffleSettings.RaffleReveal}
-                                    onChange={handleRaffleRevealNumbers}
-                                >
-                                    <FormControlLabel value={RaffleRevealNumbers.All} control={<Radio size="small" />} label="Todos ao Mesmo Tempo" />
-                                    <FormControlLabel value={RaffleRevealNumbers.RightToLeft} control={<Radio size="small" />} label="Direita para Esquerda" />
-                                    <FormControlLabel value={RaffleRevealNumbers.LeftToRight} control={<Radio size="small" />} label="Esquera para Direita" />
-                                </RadioGroup>
+
                                 <FormLabel>Quantidade de cupons que um participante deve ter para ganhar</FormLabel>
                                 <TextField
                                     size="small"
@@ -509,44 +471,82 @@ export function Coupons() {
                                     />
                                 </RadioGroup>
 
-                                <FormGroup
-                                >
-                                    <FormControlLabel
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'flex-end',
-                                            marginLeft: 0
+                                <FormControlLabel
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        marginLeft: 0
+                                    }}
+                                    control={
+                                        <Switch name="gilad"
+                                            checked={raffleSettings.AllowRepeatCoupon}
+                                            onChange={handleAllowRepeatCoupons}
+                                        />
+                                    }
+                                    label={
+
+                                        <>
+                                            <FormLabel>Repetição de Cupons</FormLabel>
+                                            <Tooltip
+                                                title={
+                                                    <>
+                                                        <Typography color="inherit">
+                                                            Permite a contablização de cupons repetidos no sorteio.
+                                                            <br />
+                                                            Todos os participantes devem no mínimo <b>{raffleSettings.MaxCouponsRaffle}</b> cupons.
+                                                        </Typography>
+                                                    </>
+
+                                                }>
+                                                <IconButton>
+                                                    <LiveHelp color='warning' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </>
+                                    }
+                                    labelPlacement="start"
+                                />
+
+                                <FormLabel>Tempo (s) de sorteio de cada cupom</FormLabel>
+                                <TextField
+                                    className="teste"
+                                    size="small"
+                                    fullWidth
+                                    variant="standard"
+                                    type="number"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={raffleSettings.DurationSencods}
+                                    InputProps={
+                                        {
+                                            inputProps: {
+                                                min: 1,
+                                                max: 10
+                                            }
                                         }}
-                                        control={
-                                            <Switch name="gilad"
-                                                checked={raffleSettings.AllowRepeatCoupon}
-                                                onChange={handleAllowRepeatCoupons}
-                                            />
-                                        }
-                                        label={
-
-                                            <>
-                                                <FormLabel>Repetição de Cupons</FormLabel>
-                                                <Tooltip
-                                                    title={
-                                                        <>
-                                                            <Typography color="inherit">
-                                                                Permite a contablização de cupons repetidos no sorteio.
-                                                                <br />
-                                                                Todos os participantes devem no mínimo <b>{raffleSettings.MaxCouponsRaffle}</b> cupons.
-                                                            </Typography>
-                                                        </>
-
-                                                    }>
-                                                    <IconButton>
-                                                        <LiveHelp color='warning' />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </>
-                                        }
-                                        labelPlacement="start"
+                                    onChange={handleTimeRaffleChange}
+                                />
+                                <FormLabel sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap'
+                                }}
+                                >
+                                    Formato Revelação Cupom&nbsp;
+                                    <RaffleNumberExemple
+                                        raffleReveal={raffleSettings.RaffleReveal}
+                                        duration={raffleSettings.DurationSencods}
                                     />
-                                </FormGroup>
+                                </FormLabel>
+                                <RadioGroup
+                                    value={raffleSettings.RaffleReveal}
+                                    onChange={handleRaffleRevealNumbers}
+                                >
+                                    <FormControlLabel value={RaffleRevealNumbers.All} control={<Radio size="small" />} label="Todos ao Mesmo Tempo" />
+                                    <FormControlLabel value={RaffleRevealNumbers.RightToLeft} control={<Radio size="small" />} label="Direita para Esquerda" />
+                                    <FormControlLabel value={RaffleRevealNumbers.LeftToRight} control={<Radio size="small" />} label="Esquera para Direita" />
+                                </RadioGroup>
+
                             </Box>
                         </AccordionDetails>
                     </Accordion>
