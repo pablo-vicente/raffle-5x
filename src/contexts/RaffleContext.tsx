@@ -25,6 +25,8 @@ type IRaffleContext = {
     updateRaffleSettings: (settings: IRaffleSettings) => void
 }
 
+const maxLengthParticipanteName = 20;
+
 
 export const RaffleContext = createContext<IRaffleContext>({} as IRaffleContext)
 
@@ -96,7 +98,7 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
                     }
                 }
 
-                if(participantName.length > 20){
+                if (participantName.length > maxLengthParticipanteName) {
                     errors.push(`Nome ${participantName} inválido. Nome deve ter no máximo 20 caracteres`);
                 }
             }
@@ -109,6 +111,9 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
                 setRaffleInput(newRaffleInput);
                 errors = [titulo, titulo2, ...participantesLessErros];
             }
+
+            if (Object.keys(result.Participants).length === 1)
+                errors.push("Um sorteio deve ter no mímimo 2 participantes.")
 
             if (errors.length !== 0)
                 return errors;
