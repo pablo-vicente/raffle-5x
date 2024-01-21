@@ -83,30 +83,35 @@ export const RaffleContextProvider = ({ children }: RaffleContextProps) => {
                 return result;
             }
 
-            if (!allowRepeatCoupon) {
-                const qnt = maxCouponsRaffle;
-                const errors: string[] = [];
 
-                for (const participantName in result.Participants) {
+            let participantesLessErros: string[] = [];
+            let errors: string[] = [];
+
+            for (const participantName in result.Participants) {
+                if (!allowRepeatCoupon) {
                     const participantCoupons = result.Participants[participantName];
-
-                    if (participantCoupons < qnt) {
+                    if (participantCoupons < maxCouponsRaffle) {
                         const message = `Participante ${participantName} possui apenas ${participantCoupons} cupons.`;
-
-                        errors.push(message)
+                        participantesLessErros.push(message)
                     }
                 }
 
-                if (errors.length !== 0) {
-
-                    const titulo = `Opção de Repetição de Cupons desabilitada.`;
-                    const titulo2 = `Os seguintes participantes não possuem o mínimo de ${qnt} cupons.`;
-
-                    setRaffleInput(newRaffleInput);
-                    return [titulo, titulo2, ...errors];
+                if(participantName.length > 20){
+                    errors.push(`Nome ${participantName} inválido. Nome deve ter no máximo 20 caracteres`);
                 }
-
             }
+
+            if (participantesLessErros.length !== 0) {
+
+                const titulo = `Opção de Repetição de Cupons desabilitada.`;
+                const titulo2 = `Os seguintes participantes não possuem o mínimo de ${maxCouponsRaffle} cupons.`;
+
+                setRaffleInput(newRaffleInput);
+                errors = [titulo, titulo2, ...participantesLessErros];
+            }
+
+            if (errors.length !== 0)
+                return errors;
 
             const durationRecomended = result.Max.toFixed().length;
 
