@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.js": "/pablo-vicente/raffle-5x/static/js/main.6021231b.js",
+    "static/js/787.b110eb85.chunk.js": "/pablo-vicente/raffle-5x/static/js/787.b110eb85.chunk.js",
+    "service-worker.js": "/pablo-vicente/raffle-5x/service-worker.js",
+    "index.html": "/pablo-vicente/raffle-5x/index.html",
+    "main.6021231b.js.map": "/pablo-vicente/raffle-5x/static/js/main.6021231b.js.map",
+    "787.b110eb85.chunk.js.map": "/pablo-vicente/raffle-5x/static/js/787.b110eb85.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.6021231b.js"
+  ]
+}
