@@ -1,5 +1,5 @@
 import {
-  BrowserRouter,
+  HashRouter,
   Route,
   Routes,
 } from "react-router-dom";
@@ -17,14 +17,14 @@ function App() {
 
   return (
     <RaffleContextProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" index element={<Coupons />} />
           <Route path={Page.Dashboard} element={<Dashboard />} />
           <Route path={Page.Coupons} element={<Coupons />} />
           <Route path="*" element={<h1>404: page not found</h1>} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </RaffleContextProvider>
   );
 }
