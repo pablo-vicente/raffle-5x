@@ -1,14 +1,14 @@
 import { Box, Button, ButtonGroup, Paper } from "@mui/material";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { RaffledCouponsList } from "../components/RaffledCouponsList";
-import { Ticket } from "../components/Ticket";
 import { IRaffledCoupon, IRankPartipant, RankDisplay } from "../types";
-import { ModalWinner } from "../components/Modal";
+import { ModalWinner } from "../components/ModalWinner";
 import { RaffleContext } from "../contexts/RaffleContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../App";
 import useRaffleNumber from "../hooks/RaffleNumber";
 import { Rank } from "../components/Rank";
+import { Ticket } from "../components/Ticket_";
 
 type IRaffle = {
     coupons: { [key: number]: IRaffledCoupon[] },
@@ -17,6 +17,7 @@ type IRaffle = {
 
 type IraffleToWinner = {
     winner: string,
+    time: Date,
     first: boolean,
     keepRaffling: boolean
 }
@@ -31,6 +32,7 @@ export function Dashboard() {
         raffleSettings.DurationSencods);
     const [raffleToWinner, setRaffleToWinner] = useState<IraffleToWinner>({
         winner: "",
+        time: new Date(),
         first: false,
         keepRaffling: false
     });
@@ -197,7 +199,10 @@ export function Dashboard() {
 
                         {
                             raffleToWinner.winner
-                                ? <ModalWinner name={raffleToWinner.winner} />
+                                ? <ModalWinner
+                                    name={raffleToWinner.winner}
+                                    time={raffleToWinner.time}
+                                />
                                 : <></>
                         }
 
@@ -282,7 +287,10 @@ export function Dashboard() {
 
                         {
                             raffleToWinner.winner
-                                ? <ModalWinner name={raffleToWinner.winner} />
+                                ? <ModalWinner
+                                name={raffleToWinner.winner}
+                                time={raffleToWinner.time}
+                            />
                                 : <></>
                         }
 

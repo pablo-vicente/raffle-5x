@@ -7,8 +7,10 @@ import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 export function ModalWinner({
     name,
+    time
 }: {
     name: string,
+    time: Date
 }) {
     const [open, setOpen] = React.useState(!!name);
     const handleClose = () => setOpen(false);
@@ -73,7 +75,7 @@ export function ModalWinner({
                                 textWrap: 'textWrap',
                                 color: 'black',
                             }}>
-                            {name}
+                            {name} {time.toLocaleTimeString("pt-BR")}
                         </Typography>
                     </Box>
                 </Box>
