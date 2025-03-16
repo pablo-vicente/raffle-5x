@@ -5,7 +5,6 @@ import {
     Box,
     Button,
     FormControlLabel,
-    FormGroup,
     FormLabel,
     IconButton,
     List,
