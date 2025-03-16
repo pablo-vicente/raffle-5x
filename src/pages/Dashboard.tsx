@@ -288,9 +288,9 @@ export function Dashboard() {
                         {
                             raffleToWinner.winner
                                 ? <ModalWinner
-                                name={raffleToWinner.winner}
-                                time={raffleToWinner.time}
-                            />
+                                    name={raffleToWinner.winner}
+                                    time={raffleToWinner.time}
+                                />
                                 : <></>
                         }
 
